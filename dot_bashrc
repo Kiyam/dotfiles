@@ -123,12 +123,12 @@ source "$OSH"/oh-my-bash.sh
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/ruyi/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/ruyi/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/ruyi/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/anaconda3/etc/profile.d/conda.sh"
     else
         export PATH="/home/ruyi/anaconda3/bin:$PATH"
     fi
@@ -146,3 +146,6 @@ export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64:$LD_LIBRARY_PATH
 # export LIBGL_ALWAYS_INDIRECT=1
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
+
+# Zoxide
+eval "$(zoxide init bash --cmd cd)"
