@@ -138,8 +138,12 @@ unset __conda_setup
 
 # Add this to your PATH if it’s not already declared
 export PATH=$PATH:$HOME/.local/bin
-export PATH=/usr/.local/cuda-10.0/bin:$PATH
-export LD_LIBRARY_PATH=/usr/.local/cuda-10.0/lib64:$LD_LIBRARY_PATH
+
+# Redirect LD_library_path etc.
+export PATH=$PATH:/usr/.local/cuda-10.0/bin
+export CPATH=$CPATH:$HOME/.local/include/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.local/lib/cuda/include
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.local/lib/cuda/lib64
 
 # Something for X11
 # export DISPLAY=$(echo $SSH_CLIENT | awk '{print $1}'):0
