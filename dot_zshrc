@@ -127,3 +127,8 @@ ssh-add ~/.ssh/id_ed25519
 
 # Zoxide
 eval "$(zoxide init zsh --cmd cd)"
+
+## Auto start tmux upon shell login, will default to a session called "default"
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+    tmux attach -t default || tmux new -s default
+fi

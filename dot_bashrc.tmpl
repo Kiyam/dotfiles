@@ -152,11 +152,13 @@ export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/lib64:$LD_LIBRARY_PATH
 export VISUAL=nvim
 export EDITOR=nvim
 
-# Something for X11
+{{- if eq .chezmoi.hostname "ruyi-node" }}
+# Something for X11 and ssh agent forwarding, only do this for ruyi-node
 # export DISPLAY=$(echo $SSH_CLIENT | awk '{print $1}'):0
 # export LIBGL_ALWAYS_INDIRECT=1
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
+{{ end }}
 
 # Zoxide
 eval "$(zoxide init bash --cmd cd)"
