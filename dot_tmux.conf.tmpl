@@ -1,7 +1,8 @@
 # List of plugins
+set -g @plugin 'catppuccin/tmux'
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'dracula/tmux'
+# set -g @plugin 'dracula/tmux'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'nhdaly/tmux-better-mouse-mode'
@@ -27,17 +28,20 @@ set -g base-index 1              # start indexing windows at 1 instead of 0
 set -g history-limit 1000000     # increase history size (from 2,000)
 set -g renumber-windows on       # renumber all windows when any window is closed
 
+# Catpuccin options
+set -g @catppuccin_flavour 'macchiato' # latte, frappe, macchiato, mocha
+
 # Dracula options
-set -g @dracula-show-fahrenheit false
-set -g @dracula-show-powerline true
-set -g @dracula-show-timezone false
-set -g @dracula-fixed-location "London"
-set -g @dracula-time-format "%F %R"
-set -g @dracula-plugins "network-bandwidth cpu-usage gpu-usage ram-usage weather time"
-#set -g @dracula-cpu-usage-colors "pink dark_gray"
+# set -g @dracula-show-fahrenheit false
+# set -g @dracula-show-powerline true
+# set -g @dracula-show-timezone false
+# set -g @dracula-fixed-location "London"
+# set -g @dracula-time-format "%F %R"
+# set -g @dracula-plugins "network-bandwidth cpu-usage gpu-usage ram-usage weather time"
+# set -g @dracula-cpu-usage-colors "pink dark_gray"
 
 # Enable automatic restore
-set -g @continuum-restore 'on'
+set -g @continuum-restore 'off'
 
 # Plugin to enable nvim file explorer sidebar
 set -g @treemux-tree-nvim-init-file '~/.tmux/plugins/treemux/configs/treemux_init.lua'
