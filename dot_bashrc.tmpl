@@ -121,6 +121,13 @@ source "$OSH"/oh-my-bash.sh
 
 # Extra stuff -----------------------------------------------------------
 
+# Some machine specific conda and module logic
+{{- if eq .chezmoi.hostname "hypatia-login.local" }}
+# Load anaconda
+source /share/apps/anaconda/3-2022.05/etc/profile.d/conda.sh
+# Load a few generally useful modules
+module load cmake/3.17.3 git/2.19 gcc/10.1.0 gsl/2.6
+{{ else }}
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -135,6 +142,7 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+{{ end }}
 
 # Add this to your PATH if it’s not already declared
 export PATH=$HOME/.local/bin:$PATH
