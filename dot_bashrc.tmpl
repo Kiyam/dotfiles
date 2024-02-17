@@ -148,6 +148,10 @@ export CPATH=$HOME/.local/include/:$CPATH
 export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/include:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/lib64:$LD_LIBRARY_PATH
 
+# Make nvim the default editor
+export VISUAL=nvim
+export EDITOR=nvim
+
 # Something for X11
 # export DISPLAY=$(echo $SSH_CLIENT | awk '{print $1}'):0
 # export LIBGL_ALWAYS_INDIRECT=1
