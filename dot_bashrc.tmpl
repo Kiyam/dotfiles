@@ -59,12 +59,6 @@ completions=(
   ssh
 )
 
-# Auto start tmux upon shell login, will default to a session called "default"
-
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach -t default || tmux new -s default
-fi
-
 # Which aliases would you like to load? (aliases can be found in ~/.oh-my-bash/aliases/*)
 # Custom aliases may be added to ~/.oh-my-bash/custom/aliases/
 # Example format: aliases=(vagrant composer git-avh)
@@ -162,3 +156,10 @@ ssh-add ~/.ssh/id_ed25519
 
 # Zoxide
 eval "$(zoxide init bash --cmd cd)"
+
+# Auto start tmux upon shell login, will default to a session called "default"
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+    tmux attach -t default || tmux new -s default
+fi
+
+
