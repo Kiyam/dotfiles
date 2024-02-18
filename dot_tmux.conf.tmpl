@@ -29,6 +29,10 @@ set -g base-index 1              # start indexing windows at 1 instead of 0
 set -g history-limit 1000000     # increase history size (from 2,000)
 set -g renumber-windows on       # renumber all windows when any window is closed
 
+# some general status bar options
+# set-option -g status-position top
+# set-option -g status-style bg=default
+
 # Catpuccin options
 set -g @catppuccin_flavour 'macchiato' # latte, frappe, macchiato, mocha
 
@@ -36,10 +40,8 @@ set -g @catppuccin_window_left_separator ""
 set -g @catppuccin_window_right_separator " "
 set -g @catppuccin_window_middle_separator " █"
 set -g @catppuccin_window_number_position "right"
-
 set -g @catppuccin_window_default_fill "number"
 set -g @catppuccin_window_default_text "#W"
-
 set -g @catppuccin_window_current_fill "number"
 set -g @catppuccin_window_current_text "#W"
 
