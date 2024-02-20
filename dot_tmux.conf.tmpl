@@ -25,6 +25,7 @@ set -s default-terminal 'tmux-256color'
 set-option -g terminal-overrides ',xterm-256color:RGB'
 {{ end }}
 
+set -g update-environment -r     # Update the tmux environment to use the newest environmental variables
 set -g base-index 1              # start indexing windows at 1 instead of 0
 set -g history-limit 1000000     # increase history size (from 2,000)
 set -g renumber-windows on       # renumber all windows when any window is closed
