@@ -1,5 +1,5 @@
 {{- if ne .chezmoi.os "windows" }}
-Documents\Powershell\Microsoft.PowerShell_profile.ps1 # only manage powershell if on windows
+Documents\Powershell\Microsoft.Powershell_profile.ps1 # only manage powershell if on windows
 {{- end }}
 {{- if ne .chezmoi.os "linux" }}
 .tmux.conf # only manage on linux
