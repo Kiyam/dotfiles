@@ -164,6 +164,10 @@ ssh-add ~/.ssh/id_ed25519
 # Zoxide
 eval "$(zoxide init bash --cmd cd)"
 
+# Rust
+#export PATH=$HOME/.cargo/env:$PATH
+. "$HOME/.cargo/env"
+
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 # don't do anything if it starts on this cluster
 {{ else }}
