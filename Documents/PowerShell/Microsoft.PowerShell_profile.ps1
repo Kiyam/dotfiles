@@ -12,4 +12,3 @@ if (Test-Path($ChocolateyProfile)) {
 }
 
 Invoke-Expression (& { (zoxide init powershell --cmd cd | Out-String) })
-Set-Location C:\Users\Kiyam
