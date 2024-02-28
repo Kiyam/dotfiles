@@ -8,7 +8,11 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'nhdaly/tmux-better-mouse-mode'
 set -g @plugin 'lljbash/tmux-update-display'
+
+# Plugin to enable nvim file explorer sidebar
+set -g @treemux-tree-nvim-init-file '~/.tmux/plugins/treemux/configs/treemux_init.lua'
 set -g @plugin 'kiyoon/treemux'
+
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'wfxr/tmux-fzf-url'
 
@@ -69,7 +73,7 @@ set -g @catppuccin_directory_text "#{pane_current_path}"
 set -g @continuum-restore 'on'
 
 # Plugin to enable nvim file explorer sidebar
-set -g @treemux-tree-nvim-init-file '~/.tmux/plugins/treemux/configs/treemux_init.lua'
+# set -g @treemux-tree-nvim-init-file '~/.tmux/plugins/treemux/configs/treemux_init.lua'
 
 # Mouse options
 set-option -g mouse on
