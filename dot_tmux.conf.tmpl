@@ -20,9 +20,9 @@ set -g @plugin 'wfxr/tmux-fzf-url'
 # Some machine specific conda and module logic
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 # set hypatia suitable colours
-set -s default-terminal 'xterm-256color'
+set -s default-terminal 'screen-256color'
 #set-option -sa terminal-overrides ",xterm*:Tc"
-set-option -g terminal-overrides ',xterm-256color:RGB'
+set-option -ga terminal-overrides ',xterm-256color:RGB'
 {{ else }}
 set -s default-terminal 'tmux-256color'
 #set-option -sa terminal-overrides ",xterm*:Tc"
