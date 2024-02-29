@@ -1,8 +1,10 @@
 {{- if ne .chezmoi.os "windows" }}
-Documents\Powershell\Microsoft.Powershell_profile.ps1 # only manage powershell if on windows
+Documents # only manage on windows
+AppData # only manage on windows
 {{- end }}
 {{- if ne .chezmoi.os "linux" }}
 .tmux.conf # only manage on linux
 .bashrc # only manage on linux
 .zshrc # only manage on linux
+.config/nvim/lua/plugins/custom.lua # only manage on linux
 {{- end }}
