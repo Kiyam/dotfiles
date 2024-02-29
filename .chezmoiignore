@@ -1,6 +1,6 @@
 {{- if ne .chezmoi.os "windows" }}
 Documents # only manage on windows
-AppData # only manage on windows
+Appdata # only manage on windows
 {{- end }}
 {{- if ne .chezmoi.os "linux" }}
 .tmux.conf # only manage on linux
