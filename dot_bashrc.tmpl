@@ -173,6 +173,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+eval "$(atuin init bash)"
+
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 # don't do anything if it starts on this cluster
 {{ else }}
