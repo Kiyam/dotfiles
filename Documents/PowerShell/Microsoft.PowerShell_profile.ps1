@@ -1,6 +1,11 @@
-Import-Module posh-git
-Import-Module oh-my-posh
-Set-PoshPrompt -Theme negligible
+oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\negligible.omp.json" | Invoke-Expression
+
+function Set-PoshGitStatus {
+    $global:GitStatus = Get-GitStatus
+    $env:POSH_GIT_STRING = Write-GitStatus -Status $global:GitStatus
+}
+New-Alias -Name 'Set-PoshContext' -Value 'Set-PoshGitStatus' -Scope Global -Force
+
 # Import the Chocolatey Profile that contains the necessary code to enable
 # tab-completions to function for `choco`.
 # Be aware that if you are missing these lines from your profile, tab completion
