@@ -122,7 +122,11 @@ source /share/apps/anaconda/3-2022.05/etc/profile.d/conda.sh
 # Load a few generally useful modules
 module load cmake/3.17.3 git/2.44.0 gcc/10.1.0 gsl/2.6
 # conda activate ~/bash_env
+# use bash preexec.sh
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 {{ else }}
+# some new readline stuff
+source ~/.local/share/blesh/ble.sh
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -173,12 +177,9 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# some new readline stuff
-source ~/.local/share/blesh/ble.sh
 eval "$(atuin init bash)"
 
 {{- if eq .chezmoi.hostname "hypatia-login" }}
-# don't do anything if it starts on this cluster
 {{ else }}
 # Auto start tmux upon shell login, will default to a session called "default"
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
