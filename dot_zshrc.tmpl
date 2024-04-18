@@ -112,24 +112,43 @@ export EDITOR='nvim'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Some machine specific conda and module logic
+{{- if eq .chezmoi.hostname "hypatia-login" }}
+# Load anaconda
+source /share/apps/anaconda/3-2022.05/etc/profile.d/conda.sh
+# Load a few generally useful modules
+module load cmake/3.17.3 git/2.44.0 gcc/10.1.0 gsl/2.6
+{{ else }}
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/ruyi/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/ruyi/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/ruyi/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/anaconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/home/ruyi/anaconda3/bin:$PATH"
+        export PATH="$HOME/anaconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+{{ end }}
 
-export PATH=$PATH:$HOME/.local/bin
-export PATH=/usr/local/cuda-10.0/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64:$LD_LIBRARY_PATH
+# Add this to your PATH if it’s not already declared
+export PATH=$HOME/.local/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
+export PATH=$PATH:$HOME/.local/go/bin
+
+# Redirect LD_library_path etc.
+export PATH=/usr/.local/cuda-10.0/bin:$PATH
+export CPATH=$HOME/.local/include/:$CPATH
+export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/include:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/lib64:$LD_LIBRARY_PATH
+
+# Make nvim the default editor
+export VISUAL=nvim
+export EDITOR=nvim
 
 # Something for X11
 # export DISPLAY=$(echo $SSH_CLIENT | awk '{print $1}'):0
@@ -190,9 +209,14 @@ _fzf_comprun() {
   esac
 }
 
+# Rust
+#export PATH=$HOME/.cargo/env:$PATH
+. "$HOME/.cargo/env"
+
 # Github Copilot CLI
 eval "$(gh copilot alias -- zsh)"
 
+# Nodejs npm and nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -200,9 +224,12 @@ export NVM_DIR="$HOME/.nvm"
 # This loads atuin
 eval "$(atuin init zsh)"
 
+# Loads tmux if not on hypatia
+{{- if eq .chezmoi.hostname "hypatia-login" }}
+{{ else }}
 ## Auto start tmux upon shell login, will default to a session called "default"
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
     tmux attach -t default || tmux new -s default
 fi
-
+{{ end }}
 

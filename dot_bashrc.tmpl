@@ -147,6 +147,7 @@ unset __conda_setup
 export PATH=$HOME/.local/bin:$PATH
 export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
 export PATH=$PATH:$HOME/.local/go/bin
+
 # Redirect LD_library_path etc.
 export PATH=/usr/.local/cuda-10.0/bin:$PATH
 export CPATH=$HOME/.local/include/:$CPATH
@@ -157,13 +158,11 @@ export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/lib64:$LD_LIBRARY_PATH
 export VISUAL=nvim
 export EDITOR=nvim
 
-{{- if eq .chezmoi.hostname "ruyi-node" }}
 # Something for X11 and ssh agent forwarding, only do this for ruyi-node
 # export DISPLAY=$(echo $SSH_CLIENT | awk '{print $1}'):0
 # export LIBGL_ALWAYS_INDIRECT=1
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
-{{ end }}
 
 # duf for better df
 alias df="duf --hide-fs squashfs"
@@ -227,6 +226,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# This loads atuin
 eval "$(atuin init bash)"
 
 {{- if eq .chezmoi.hostname "hypatia-login" }}
