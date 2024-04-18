@@ -137,6 +137,9 @@ export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64:$LD_LIBRARY_PATH
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 
+# duf for better df
+alias df="duf --hide-fs squashfs"
+
 # Zoxide
 eval "$(zoxide init zsh --cmd cd)"
 
