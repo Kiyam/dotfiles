@@ -97,6 +97,9 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='mvim'
 # fi
 
+export PATH="$PATH:/opt/nvim/"
+export EDITOR='nvim'
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -137,6 +140,9 @@ ssh-add ~/.ssh/id_ed25519
 # Zoxide
 eval "$(zoxide init zsh --cmd cd)"
 
+# Loads fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 # Github Copilot CLI
 eval "$(gh copilot alias -- zsh)"
 
@@ -144,6 +150,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# This loads atuin
 eval "$(atuin init zsh)"
 
 ## Auto start tmux upon shell login, will default to a session called "default"
