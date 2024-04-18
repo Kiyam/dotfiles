@@ -159,6 +159,9 @@ export EDITOR=nvim
 # export LIBGL_ALWAYS_INDIRECT=1
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
+
+# Github Copilot CLI
+eval "$(gh copilot alias -- zsh)"
 {{ end }}
 
 # duf for better df
@@ -217,9 +220,6 @@ _fzf_comprun() {
 # Rust
 #export PATH=$HOME/.cargo/env:$PATH
 . "$HOME/.cargo/env"
-
-# Github Copilot CLI
-eval "$(gh copilot alias -- zsh)"
 
 # Nodejs npm and nvm
 export NVM_DIR="$HOME/.nvm"
