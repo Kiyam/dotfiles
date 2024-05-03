@@ -257,6 +257,9 @@ export NVM_DIR="$HOME/.nvm"
 # This loads atuin
 eval "$(atuin init zsh)"
 
+# Loads iTerm2 integrations
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
+
 # Loads tmux if not on hypatia
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 {{ else }}
