@@ -123,6 +123,21 @@ export EDITOR='nvim'
 source /share/apps/anaconda/3-2022.05/etc/profile.d/conda.sh
 # Load a few generally useful modules
 module load cmake/3.17.3 git/2.44.0 gcc/10.1.0 gsl/2.6
+{{ else if eq .chezmoi.os "darwin" }}
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/opt/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
 {{ else }}
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
