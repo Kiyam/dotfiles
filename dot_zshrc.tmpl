@@ -224,8 +224,11 @@ _fzf_compgen_dir() {
 }
 
 # ---- Eza (better ls) -----
-# alias ls="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions"
+{{- if eq .chezmoi.hostname "hypatia-login" }}
+alias ls="eza --color=always --long --git --no-filesize --icons=always --no-user --no-permissions"
+{{ else }}
 alias ls="eza --color=always --long --group --git --icons=always"
+{{ end }}
 
 # fzf options to make use of bat previews
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
