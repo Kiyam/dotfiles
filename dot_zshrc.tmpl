@@ -76,38 +76,22 @@ ZSH_THEME="spaceship"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 plugins=(
   git
   urltools
   bgnotify
-<<<<<<< HEAD
-  zsh-syntax-highlighting
-)
-=======
 )
 source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH/oh-my-zsh.sh
->>>>>>> refs/remotes/origin/master
 {{ else }}
 plugins=(
   git
   urltools
   bgnotify
   zsh-autosuggestions
-<<<<<<< HEAD
-  zsh-syntax-highlighting
-#  zsh-renew-tmux-env
-#  zsh-history-enquirer
-=======
->>>>>>> refs/remotes/origin/master
 )
-{{ end }}
-
+source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH/oh-my-zsh.sh
 
 # Github Copilot CLI
