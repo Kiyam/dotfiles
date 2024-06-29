@@ -76,30 +76,43 @@ ZSH_THEME="spaceship"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 plugins=(
   git
   urltools
   bgnotify
+<<<<<<< HEAD
   zsh-syntax-highlighting
 )
+=======
+)
+source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH/oh-my-zsh.sh
+>>>>>>> refs/remotes/origin/master
 {{ else }}
 plugins=(
   git
-#  autojump
   urltools
   bgnotify
   zsh-autosuggestions
+<<<<<<< HEAD
   zsh-syntax-highlighting
 #  zsh-renew-tmux-env
 #  zsh-history-enquirer
+=======
+>>>>>>> refs/remotes/origin/master
 )
 {{ end }}
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+# Github Copilot CLI
+eval "$(gh copilot alias -- zsh)"
+{{ end }}
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -189,10 +202,6 @@ export EDITOR=nvim
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 
-# Github Copilot CLI
-eval "$(gh copilot alias -- zsh)"
-{{ end }}
-
 # duf for better df
 alias df="duf --hide-fs squashfs"
 
@@ -224,11 +233,7 @@ _fzf_compgen_dir() {
 }
 
 # ---- Eza (better ls) -----
-{{- if eq .chezmoi.hostname "hypatia-login" }}
-alias ls="eza --color=always --long --git --no-filesize --icons=always --no-user --no-permissions"
-{{ else }}
 alias ls="eza --color=always --long --group --git --icons=always"
-{{ end }}
 
 # fzf options to make use of bat previews
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
