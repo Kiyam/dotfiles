@@ -206,7 +206,6 @@ export NVM_DIR="$HOME/.nvm"
 # ---- This loads atuin ----
 eval "$(atuin init zsh)"
 
-
 # Load custom shell options if not on hypatia
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 {{ else }}
@@ -233,7 +232,6 @@ _fzf_compgen_path() {
 _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
-
 
 # fzf options to make use of bat previews
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
