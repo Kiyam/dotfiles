@@ -186,13 +186,31 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 {{ end }}
 
-# duf for better df
+# ---- duf for better df ----
 alias df="duf --hide-fs squashfs"
 
-# Zoxide
+# ---- Zoxide ----
 eval "$(zoxide init zsh --cmd cd)"
 
-# Loads fzf
+# ---- Eza (better ls) -----
+alias ls="eza --color=always --long --group --git --icons=always"
+
+# ---- Rust ----
+. "$HOME/.cargo/env"
+
+# ---- Nodejs npm and nvm ----
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# ---- This loads atuin ----
+eval "$(atuin init zsh)"
+
+
+# Load custom shell options if not on hypatia
+{{- if eq .chezmoi.hostname "hypatia-login" }}
+{{ else }}
+# ---- Loads fzf ----
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # -- Use fd instead of fzf --
@@ -216,8 +234,6 @@ _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
 
-# ---- Eza (better ls) -----
-alias ls="eza --color=always --long --group --git --icons=always"
 
 # fzf options to make use of bat previews
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
@@ -238,23 +254,9 @@ _fzf_comprun() {
   esac
 }
 
-# Rust
-. "$HOME/.cargo/env"
-
-# Nodejs npm and nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# This loads atuin
-eval "$(atuin init zsh)"
-
 # Loads iTerm2 integrations
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 
-# Loads tmux if not on hypatia
-{{- if eq .chezmoi.hostname "hypatia-login" }}
-{{ else }}
 ## Auto start tmux upon shell login, will default to a session called "default"
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
     tmux attach -t default || tmux new -s default
