@@ -209,8 +209,12 @@ eval "$(atuin init zsh)"
 # Load custom shell options if not on hypatia
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 {{ else }}
+
+# ---- Loads iTerm2 integrations ----
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
+
 # ---- Loads fzf ----
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source <(fzf --zsh)
 
 # -- Use fd instead of fzf --
 export FZF_DEFAULT_OPTS=" \
@@ -251,9 +255,6 @@ _fzf_comprun() {
     *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
   esac
 }
-
-# Loads iTerm2 integrations
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 
 ## Auto start tmux upon shell login, will default to a session called "default"
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
