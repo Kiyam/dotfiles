@@ -130,6 +130,7 @@ export EDITOR='nvim'
 source /share/apps/anaconda/3-2022.05/etc/profile.d/conda.sh
 # Load a few generally useful modules
 module load cmake/3.17.3 git/2.44.0 gcc/10.1.0 gsl/2.6
+
 {{ else if eq .chezmoi.os "darwin" }}
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -145,6 +146,13 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+
+# Load in Google Cloud SDK
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/kiyam/Tools/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/kiyam/Tools/google-cloud-sdk/path.zsh.inc'; fi
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/kiyam/Tools/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/kiyam/Tools/google-cloud-sdk/completion.zsh.inc'; fi
+
 {{ else }}
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
