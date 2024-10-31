@@ -258,9 +258,9 @@ _fzf_comprun() {
   esac
 }
 
-## Auto start tmux upon shell login, will default to a session called "default"
+## Auto start tmux upon shell login, will default to a session called "evolution"
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach -t default || tmux new -s default
+    tmux attach -t evo || tmux new -s evo
 fi
 {{ end }}
 
