@@ -12,8 +12,14 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="gnzh"
 {{ else if eq .chezmoi.os "darwin" }}
 source $(brew --prefix)/opt/spaceship/spaceship.zsh
+
+# ---- Loads fzf ----
+source <(fzf --zsh)
+
 {{ else }}
 ZSH_THEME="spaceship"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 {{ end }}
 
 # Set list of themes to pick from when loading at random
@@ -180,14 +186,6 @@ export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/lib64:$LD_LIBRARY_PATH
 export VISUAL=nvim
 export EDITOR=nvim
 
-{{ if eq .chezmoi.hostname "ruyi-node" }}
-# Something for X11
-# export DISPLAY=$(echo $SSH_CLIENT | awk '{print $1}'):0
-# export LIBGL_ALWAYS_INDIRECT=1
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-{{ end }}
-
 # ---- duf for better df ----
 alias df="duf --hide-fs squashfs"
 
@@ -214,9 +212,6 @@ eval "$(atuin init zsh)"
 
 # ---- Loads iTerm2 integrations ----
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
-
-# ---- Loads fzf ----
-source <(fzf --zsh)
 
 # -- Use fd instead of fzf --
 export FZF_DEFAULT_OPTS=" \
