@@ -196,6 +196,12 @@ _fzf_comprun() {
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 {{ else if eq .chezmoi.os "darwin" }}
 source <(fzf --zsh)
+# ff function to check aerospace windows in terminal
+fuzzy_aerospace() {
+  aerospace list-windows --all | fzf --bind 'enter:execute(bash -c "aerospace focus --window-id {1}")+abort'
+}
+alias ff=fuzzy_aerospace
+
 {{ else }}
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 {{ end }}
