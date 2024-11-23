@@ -12,45 +12,13 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="gnzh"
 {{ else if eq .chezmoi.os "darwin" }}
 source $(brew --prefix)/opt/spaceship/spaceship.zsh
-
-# ---- Loads fzf ----
-source <(fzf --zsh)
-
 {{ else }}
 ZSH_THEME="spaceship"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 {{ end }}
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+## Enable auto oh my zsh updates
+zstyle ':omz:update' mode auto      # update automatically without asking
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
@@ -99,47 +67,25 @@ plugins=(
 source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH/oh-my-zsh.sh
 
-# Github Copilot CLI
+## Github Copilot CLI
 eval "$(gh copilot alias -- zsh)"
 {{ end }}
 
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
+## Set the default editor to neovim
 export PATH="$PATH:/opt/nvim/"
 export EDITOR='nvim'
+export VISUAL='nvim'
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# Some machine specific conda and module logic
+## Some machine specific conda and module logic
+## If Hypatia...
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 # Load anaconda
 source /share/apps/anaconda/3-2022.05/etc/profile.d/conda.sh
 # Load a few generally useful modules
 module load cmake/3.17.3 git/2.44.0 gcc/10.1.0 gsl/2.6
 
+## If on a mac...
 {{ else if eq .chezmoi.os "darwin" }}
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
@@ -151,11 +97,9 @@ else
     fi
 fi
 unset __conda_setup
-# <<< conda initialize <<<
 
+## If on a linux machine...
 {{ else }}
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
@@ -167,24 +111,19 @@ else
     fi
 fi
 unset __conda_setup
-# <<< conda initialize <<<
 {{ end }}
 
-# Add this to your PATH if it’s not already declared
+## Add some folders to path
 export PATH=$HOME/.local/bin:$PATH
 export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
 export PATH=$PATH:$HOME/.local/go/bin
 export PATH=$PATH:$HOME/bin
 
-# Redirect LD_library_path etc.
+## Add some CUDA folders to path
 export PATH=/usr/.local/cuda-10.0/bin:$PATH
 export CPATH=$HOME/.local/include/:$CPATH
 export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/include:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/lib64:$LD_LIBRARY_PATH
-
-# Make nvim the default editor
-export VISUAL=nvim
-export EDITOR=nvim
 
 # ---- duf for better df ----
 alias df="duf --hide-fs squashfs"
@@ -206,7 +145,7 @@ export NVM_DIR="$HOME/.nvm"
 # ---- This loads atuin ----
 eval "$(atuin init zsh)"
 
-# Load custom shell options if not on hypatia
+## Load custom shell options if not on hypatia
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 {{ else }}
 
@@ -252,6 +191,14 @@ _fzf_comprun() {
     *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
   esac
 }
+
+# ---- Loads fzf ----
+{{- if eq .chezmoi.hostname "hypatia-login" }}
+{{ else if eq .chezmoi.os "darwin" }}
+source <(fzf --zsh)
+{{ else }}
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+{{ end }}
 
 ## Auto start tmux upon shell login, will default to a session called "evolution"
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
