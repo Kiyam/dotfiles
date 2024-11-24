@@ -84,6 +84,7 @@ source /share/apps/anaconda/3-2022.05/etc/profile.d/conda.sh
 # Load a few generally useful modules
 module load cmake/3.17.3 git/2.44.0 gcc/10.1.0 gsl/2.6
 
+# ----- Conda init ------
 ## If on a mac...
 {{ else if eq .chezmoi.os "darwin" }}
 __conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -113,13 +114,13 @@ fi
 unset __conda_setup
 {{ end }}
 
-## Add some folders to path
+# ---- Add some folders to path ----
 export PATH=$HOME/.local/bin:$PATH
 export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH
 export PATH=$PATH:$HOME/.local/go/bin
 export PATH=$PATH:$HOME/bin
 
-## Add some CUDA folders to path
+# ---- Add some CUDA folders to path ----
 export PATH=/usr/.local/cuda-10.0/bin:$PATH
 export CPATH=$HOME/.local/include/:$CPATH
 export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/include:$LD_LIBRARY_PATH
@@ -204,6 +205,13 @@ alias ff=fuzzy_aerospace
 
 {{ else }}
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+{{ end }}
+
+# ---- Loads carapace autocompletions ----
+{{ if eq .chezmoi.os "darwin" }}
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
 {{ end }}
 
 ## Auto start tmux upon shell login, will default to a session called "evolution"
