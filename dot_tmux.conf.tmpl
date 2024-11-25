@@ -1,5 +1,5 @@
 # List of plugins
-set -g @plugin 'catppuccin/tmux#v1.0.3'
+set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'tmux-plugins/tmux-cpu'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
@@ -8,7 +8,6 @@ set -g @plugin 'nhdaly/tmux-better-mouse-mode'
 set -g @plugin 'jaclu/tmux-menus'
 set -g @plugin 'sainnhe/tmux-fzf'
 set -g @plugin 'wfxr/tmux-fzf-url'
-set -g @plugin 'tmux-plugins/tpm'
 
 set -g update-environment -r     # Update the tmux environment to use the newest environmental variables
 set -g base-index 1              # start indexing windows at 1 instead of 0
@@ -20,17 +19,17 @@ set -g renumber-windows on       # renumber all windows when any window is close
 # set-option -g status-style bg=default
 
 # Catpuccin options
-
 set -g @catppuccin_flavor "macchiato" # latte, frappe, macchiato, mocha
+
 set -g @catppuccin_window_status_style "rounded"
 set -g @catppuccin_window_number_position "right"
 
-set -g @catppuccin_window_default_fill "number"
-set -g @catppuccin_window_default_text "#W "
-set -g @catppuccin_window_default_background "#{@thm_lavender}"
+set -g @catppuccin_window_number "#I"
+set -g @catppuccin_window_text "#W"
+set -g @catppuccin_window_number_color "#{@thm_lavender}"
 
-set -g @catppuccin_window_current_fill "number"
-set -g @catppuccin_window_current_text "#W "
+set -g @catppuccin_window_current_number "#I"
+set -g @catppuccin_window_current_text "#W"
 #set -g @catppuccin_window_current_background "#{@thm_lavendar}"
 
 set -g @catppuccin_status_left_separator  " "
@@ -39,13 +38,15 @@ set -g @catppuccin_status_fill "icon"
 set -g @catppuccin_status_connect_separator "no"
 
 # Load catppuccin
-run ~/.tmux/plugins/tmux/catppuccin.tmux
 set -g status-right-length 80
 set -g status-left ""
 set -g status-right "#{E:@catppuccin_status_application}"
 set -ag status-right "#{E:@catppuccin_status_directory}"
 set -ag status-right "#{E:@catppuccin_status_user}"
 set -ag status-right "#{E:@catppuccin_status_host}"
+
+# Load Catppuccin
+run ~/.config/tmux/plugins/catppuccin/tmux/catppuccin.tmux
 
 # Enable automatic restore
 set -g @continuum-restore 'on'
@@ -57,5 +58,5 @@ set-option -g mouse on
 set-option -g default-shell $SHELL
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run -b '~/.tmux/plugins/tpm/tpm'
+run '~/.tmux/plugins/tpm/tpm'
 

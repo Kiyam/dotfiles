@@ -147,10 +147,6 @@ eval "$(atuin init zsh)"
 ## Load custom shell options if not on hypatia
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 {{ else }}
-
-# ---- Loads iTerm2 integrations ----
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
-
 # -- Use fd instead of fzf --
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
@@ -211,6 +207,11 @@ alias ff=fuzzy_aerospace
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 source <(carapace _carapace)
+{{ end }}
+
+# ---- Loads iterm integration only on mac ----
+{{ if eq .chezmoi.os "darwin" }}
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 {{ end }}
 
 # ---- auto start TMUX only if on mac ----
