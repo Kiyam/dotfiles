@@ -50,6 +50,13 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
+## Set the default editor to neovim
+export PATH="$PATH:/opt/nvim/"
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+# --- set ZSH plugins ---
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 plugins=(
   git
@@ -66,26 +73,18 @@ plugins=(
 )
 source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH/oh-my-zsh.sh
+{{ end }}
 
-## Github Copilot CLI
+# ---- Only enable github CLI on mac ----
+{{- if eq .chezmoi.os "darwin" }}
 eval "$(gh copilot alias -- zsh)"
 {{ end }}
 
-## Set the default editor to neovim
-export PATH="$PATH:/opt/nvim/"
-export EDITOR='nvim'
-export VISUAL='nvim'
 
-## Some machine specific conda and module logic
-## If Hypatia...
+# ---- Some machine specific conda and module logic ----
 {{- if eq .chezmoi.hostname "hypatia-login" }}
-# Load anaconda
 source /share/apps/anaconda/3-2022.05/etc/profile.d/conda.sh
-# Load a few generally useful modules
 module load cmake/3.17.3 git/2.44.0 gcc/10.1.0 gsl/2.6
-
-# ----- Conda init ------
-## If on a mac...
 {{ else if eq .chezmoi.os "darwin" }}
 __conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
@@ -98,9 +97,7 @@ else
     fi
 fi
 unset __conda_setup
-
-## If on a linux machine...
-{{ else }}
+{{ else }} # For a generic linux machine
 __conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
