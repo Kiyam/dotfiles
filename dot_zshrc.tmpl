@@ -192,6 +192,7 @@ _fzf_comprun() {
     *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
   esac
 }
+{{ end }}
 
 # ---- Loads fzf ----
 {{- if eq .chezmoi.hostname "hypatia-login" }}
@@ -214,7 +215,8 @@ zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 source <(carapace _carapace)
 {{ end }}
 
-## Auto start tmux upon shell login, will default to a session called "evolution"
+# ---- auto start TMUX only if on mac ----
+{{ if eq .chezmoi.os "darwin" }}
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
     tmux attach -t evo || tmux new -s evo
 fi
