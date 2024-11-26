@@ -217,6 +217,10 @@ alias ff=fuzzy_aerospace
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 source <(carapace _carapace)
+{{ else if (or (eq .chezmoi.hostname "prometheus") (eq .chezmoi.hostname "apollo")) }}
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
 {{ end }}
 
 # ---- Loads iterm integration only on mac ----
