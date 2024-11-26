@@ -65,7 +65,7 @@ plugins=(
   bgnotify
 )
 source $ZSH/oh-my-zsh.sh
-{{ else }}
+{{ else if eq .chezmoi.os "darwin" }}
 plugins=(
   git
   urltools
@@ -73,6 +73,15 @@ plugins=(
   zsh-autosuggestions
 )
 source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH/oh-my-zsh.sh
+{{ else }}
+plugins=(
+  git
+  urltools
+  bgnotify
+  zsh-autosuggestions
+)
+source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH/oh-my-zsh.sh
 {{ end }}
 
