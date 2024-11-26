@@ -56,6 +56,7 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 export PATH="$PATH:/opt/nvim/"
 export EDITOR='nvim'
 export VISUAL='nvim'
+export LS_COLORS="$(vivid generate catppuccin-macchiato)"
 
 # --- set ZSH plugins ---
 {{- if eq .chezmoi.hostname "hypatia-login" }}
