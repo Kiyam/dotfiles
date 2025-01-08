@@ -6,5 +6,8 @@ Appdata # only manage on windows
 .tmux.conf # only manage on linux
 .bashrc # only manage on linux
 .zshrc # only manage on linux
-.config/nvim/lua/plugins/custom.lua # only manage on linux
+.config/nvim/lua/plugins/custom.lua
+{{- end }}
+{{- if ne .chezmoi.os "darwin"}}
+Library # only managed on macOS
 {{- end }}
