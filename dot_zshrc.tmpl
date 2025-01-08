@@ -226,11 +226,6 @@ zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 source <(carapace _carapace)
 {{ end }}
 
-# ---- Loads iterm integration only on mac ----
-{{ if eq .chezmoi.os "darwin" }}
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
-{{ end }}
-
 # ---- auto start TMUX only if on mac ----
 {{ if eq .chezmoi.os "darwin" }}
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
