@@ -9,5 +9,6 @@ Appdata # only manage on windows
 .config/nvim/lua/plugins/custom.lua
 {{- end }}
 {{- if ne .chezmoi.os "darwin"}}
-Library # only managed on macOS
+.config/ghostty/config # only managed on macOS
+.config/aerospace/aerospace.toml
 {{- end }}
