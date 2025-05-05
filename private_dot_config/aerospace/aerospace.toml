@@ -15,9 +15,10 @@ after-login-command = []
 after-startup-command = [
   # JankyBorders has a built-in detection of already running process,
   # so it won't be run twice on AeroSpace restart
-  'exec-and-forget /opt/homebrew/opt/borders/bin/borders active_color=0xfffb41e2 inactive_color=0xff494d64 width=10.0 blacklist="iPhone Mirroring,Steam,com.valvesoftware.steam"',
+  'exec-and-forget /opt/homebrew/opt/borders/bin/borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=4.0 blacklist="iPhone Mirroring,Steam,com.valvesoftware.steam"',
 ]
-# e1e3e4
+# 0xffe1e3e4 - white
+# 0xfffb41e2 - pink
 
 # Start AeroSpace at login
 start-at-login = true
@@ -114,8 +115,8 @@ alt-ctrl-k = 'move up'
 alt-ctrl-l = 'move right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-alt-ctrl-m = 'resize smart -80'
-alt-ctrl-n = 'resize smart +80'
+alt-ctrl-n = 'resize smart -80'
+alt-ctrl-m = 'resize smart +80'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
 alt-6 = 'workspace 6'

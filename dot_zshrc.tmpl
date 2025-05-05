@@ -230,6 +230,12 @@ zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 source <(carapace _carapace)
 {{ end }}
 
+# ---- brew Ruby for MacOS -----
+{{ if eq .chezmoi.os "darwin" }}
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export PATH="/opt/homebrew/lib/ruby/gems/3.4.0/bin:$PATH"
+{{ end }}
+
 # ---- auto start TMUX only if on mac ----
 {{ if eq .chezmoi.os "darwin" }}
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
