@@ -244,9 +244,8 @@ fi
 {{ end }}
 
 # ---- Julia -----
-{{ if eq .chezmoi.hostname "apollo" }}
-path=('home/kiyam/.juliaup/bin' $path)
-export PATH
+{{ if eq .chezmoi.hostname "prometheus" }}
+export PATH=('home/kiyam/.juliaup/bin':$PATH)
 {{ else if eq .chezmoi.os "darwin" }}
 {{ end }}
 
