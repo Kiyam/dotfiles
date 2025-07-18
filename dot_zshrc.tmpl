@@ -247,5 +247,6 @@ fi
 {{ if eq .chezmoi.hostname "prometheus" }}
 export PATH="/home/kiyam/.juliaup/bin:$PATH"
 {{ else if eq .chezmoi.os "darwin" }}
+export PATH="/Users/kiyam/.juliaup/bin:$PATH"
 {{ end }}
 
