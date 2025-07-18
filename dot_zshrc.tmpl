@@ -243,3 +243,10 @@ if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
 fi
 {{ end }}
 
+# ---- Julia -----
+{{ if eq .chezmoi.hostname "apollo" }}
+path=('home/kiyam/.juliaup/bin' $path)
+export PATH
+{{ else if eq .chezmoi.os "darwin" }}
+{{ end }}
+
