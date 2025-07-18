@@ -59,12 +59,12 @@ key-mapping.preset = 'qwerty'
 #                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
 #                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
-inner.horizontal = [{ monitor."AORUS FV43U" = 12 }, 4]
-inner.vertical = [{ monitor."AORUS FV43U" = 12 }, 4]
-outer.left = [{ monitor."AORUS FV43U" = 8 }, 2]
-outer.bottom = [{ monitor."AORUS FV43U" = 8 }, 2]
-outer.top = [{ monitor."AORUS FV43U" = 8 }, 2]
-outer.right = [{ monitor."AORUS FV43U" = 8 }, 2]
+inner.horizontal = [{ monitor."AORUS FV43U" = 8 }, 4]
+inner.vertical = [{ monitor."AORUS FV43U" = 8 }, 4]
+outer.left = [{ monitor."AORUS FV43U" = 6 }, 2]
+outer.bottom = [{ monitor."AORUS FV43U" = 6 }, 2]
+outer.top = [{ monitor."AORUS FV43U" = 6 }, 2]
+outer.right = [{ monitor."AORUS FV43U" = 6 }, 2]
 
 # See https://nikitabobko.github.io/AeroSpace/guide#exec-env-vars
 [exec]
