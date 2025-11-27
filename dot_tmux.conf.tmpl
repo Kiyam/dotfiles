@@ -57,6 +57,12 @@ set-option -g mouse on
 # Use configured shell as default shell in tmux
 set-option -g default-shell $SHELL
 
+# Change the prefix key if not on a mac
+{{ if ne .chezmoi.os "darwin" }}
+set-option -g prefix C-a
+{{ end }}
+
+
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'
 
