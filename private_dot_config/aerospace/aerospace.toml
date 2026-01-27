@@ -235,13 +235,13 @@ run = 'move-node-to-workspace 0'
 if.app-id = 'tv.plex.desktop'
 run = 'move-node-to-workspace 0'
 
-[[on-window-detected]]
-if.app-id = 'org.mozilla.firefox'
-run = 'move-node-to-workspace 7'
-
-[[on-window-detected]]
-if.app-id = 'com.apple.Safari'
-run = 'move-node-to-workspace 8'
+#[[on-window-detected]]
+#if.app-id = 'org.mozilla.firefox'
+#run = 'move-node-to-workspace 7'
+#
+#[[on-window-detected]]
+#if.app-id = 'com.apple.Safari'
+#run = 'move-node-to-workspace 8'
 
 [[on-window-detected]]
 if.app-id = 'md.obsidian'
