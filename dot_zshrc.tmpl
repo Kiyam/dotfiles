@@ -140,7 +140,9 @@ export LD_LIBRARY_PATH=$HOME/.local/lib/cuda/lib64:$LD_LIBRARY_PATH
 alias df="duf --hide-fs squashfs"
 
 # ---- Zoxide ----
+{{- if (or (ne .chezmoi.hostname "compute-gpu-0-7") (ne .chezmoi.hostname "compute-gpu-0-8"))}}
 eval "$(zoxide init zsh --cmd cd)"
+{{ end }}
 
 # ---- Eza (better ls) -----
 alias ls="eza --color=always --long --group --git --icons=always"
