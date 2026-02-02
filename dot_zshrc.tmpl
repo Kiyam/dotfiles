@@ -60,6 +60,10 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 export PATH="$PATH:/opt/nvim/"
 export EDITOR='nvim'
 export VISUAL='nvim'
+
+# ---- Rust ----
+. "$HOME/.cargo/env"
+
 export LS_COLORS="$(vivid generate catppuccin-macchiato)"
 
 # --- set ZSH plugins ---
@@ -144,9 +148,6 @@ eval "$(zoxide init zsh --cmd cd)"
 
 # ---- Eza (better ls) -----
 alias ls="eza --color=always --long --group --git --icons=always"
-
-# ---- Rust ----
-. "$HOME/.cargo/env"
 
 # ---- Nodejs npm and nvm ----
 {{ if eq .chezmoi.os "darwin" }}
