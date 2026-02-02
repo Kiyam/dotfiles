@@ -257,3 +257,7 @@ export PATH="/home/kiyam/.juliaup/bin:$PATH"
 export PATH="/Users/kiyam/.juliaup/bin:$PATH"
 {{ end }}
 
+# --- Openclaw completion only on hyperion ---
+{{ if eq .chezmoi.hostname "hyperion" }}
+source <(openclaw completion --shell zsh)
+{{ end }}
