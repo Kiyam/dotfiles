@@ -245,6 +245,11 @@ if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
 fi
 {{ end }}
 
+# --- Linux Homebrew ---
+{{ if eq .chezmoi.hostname "hyperion" }}
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+{{ end }}
+
 # ---- Julia -----
 {{ if eq .chezmoi.hostname "prometheus" }}
 export PATH="/home/kiyam/.juliaup/bin:$PATH"
