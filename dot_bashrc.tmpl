@@ -1,7 +1,7 @@
 # Enable the subsequent settings only in interactive sessions
 case $- in
-  *i*) ;;
-    *) return;;
+*i*) ;;
+*) return ;;
 esac
 
 # Path to your oh-my-bash installation.
@@ -78,7 +78,7 @@ plugins=(
 
 # Which plugins would you like to conditionally load? (plugins can be found in ~/.oh-my-bash/plugins/*)
 # Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
-# Example format: 
+# Example format:
 #  if [ "$DISPLAY" ] || [ "$SSH" ]; then
 #      plugins+=(tmux-autoattach)
 #  fi
@@ -114,6 +114,8 @@ source "$OSH"/oh-my-bash.sh
 # alias ohmybash="mate ~/.oh-my-bash"
 
 # Extra stuff -----------------------------------------------------------
+
+: <<'END'
 
 # Some machine specific conda and module logic
 {{- if eq .chezmoi.hostname "hypatia-login" }}
@@ -237,4 +239,4 @@ if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
 fi
 {{ end }}
 
-
+END
