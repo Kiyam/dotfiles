@@ -62,6 +62,14 @@ set-option -g default-shell $SHELL
 set-option -g prefix C-g
 {{ end }}
 
+set -g set-clipboard on
+
+# Set some options for OSC 52 clipboard
+{{ if ne .chezmoi.os "darwin" }}
+set -as terminal-features ',ghostty*:clipboard'
+set -as terminal-overrides ',ghostty*:Ms=\E]52;%p1%s;%p2%s\007'
+{{ end }}
+
 # Then set some tmux terminal colours for macos ghostty
 {{ if ne .chezmoi.os "darwin" }}
 set -g default-terminal "tmux-256color"
