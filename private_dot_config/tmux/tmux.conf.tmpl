@@ -63,7 +63,6 @@ set-option -g prefix C-g
 {{ end }}
 
 set -g set-clipboard on
-
 # Set some options for OSC 52 clipboard
 {{ if ne .chezmoi.os "darwin" }}
 set -as terminal-features ',ghostty*:clipboard'

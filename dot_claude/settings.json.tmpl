@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/rm_confirmation.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+
+{{ if eq .chezmoi.os "darwin" }}
+  "enabledPlugins": {
+    "github@claude-plugins-official": true,
+    "obsidian-cli@obsidian-cli-skill": true
+  },
+  "extraKnownMarketplaces": {
+    "obsidian-cli-skill": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/pablo-mano/Obsidian-CLI-skill.git"
+      }
+    }
+  }
+{{ else }}
+  "enabledPlugins": {
+    "github@claude-plugins-official": true,
+  },
+{{ end }}
+
+
+}
+
