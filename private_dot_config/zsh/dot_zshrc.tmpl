@@ -200,6 +200,7 @@ _fzf_comprun() {
 {{- if eq .chezmoi.hostname "hypatia-login" }}
 {{ else if eq .chezmoi.os "darwin" }}
 source <(fzf --zsh)
+
 # ff function to check aerospace windows in terminal
 fuzzy_aerospace() {
   aerospace list-windows --all | fzf --bind 'enter:execute(bash -c "aerospace focus --window-id {1}")+abort'
@@ -230,6 +231,15 @@ export PATH="/opt/homebrew/lib/ruby/gems/3.4.0/bin:$PATH"
 # ---- start clifton for isambard only on MacOS -----
 {{ if eq .chezmoi.os "darwin" }}
 export PATH="/Users/kiyam/Applications:$PATH"
+{{ end }}
+
+# ---- enable lazy loading of shell secrets from bitwarden ----
+{{ if eq .chezmoi.os "darwin" }}
+load_secrets() {
+  export BW_SESSION=$(bw unlock --raw)
+  export GITHUB_PAT=$(bw get password "Github Claude Access Token")
+  echo "Secrets loaded from bitwarden."
+}
 {{ end }}
 
 # ---- auto start TMUX only if on mac ----

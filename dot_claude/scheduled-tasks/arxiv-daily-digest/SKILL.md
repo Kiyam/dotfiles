@@ -40,11 +40,10 @@ If the file does not exist, skip this step and proceed with the topic list above
 ### Step 1 — Scrape arXiv listing pages
 Use WebFetch to fetch each of these four listing pages. For each page, extract the arXiv IDs of **new submissions only** (not cross-lists or replacements):
 - https://arxiv.org/list/astro-ph.CO/recent
-- https://arxiv.org/list/astro-ph.GA/recent
-- https://arxiv.org/list/cs.LG/recent
+- https://arxiv.org/list/astro-ph.IM/recent
 - https://arxiv.org/list/stat.ML/recent
 
-From each page, collect the paper IDs (format like `2501.12345`). Deduplicate across all four lists. Aim for up to 100 unique IDs total, prioritising astro-ph.CO and astro-ph.GA.
+From each page, collect the paper IDs (format like `2501.12345`). Deduplicate across all four lists. Aim for up to 100 unique IDs total, prioritising astro-ph.CO and astro-ph.IM.
 
 ### Step 2 — Fetch paper metadata
 Use WebFetch to call the arXiv Atom API in batches of up to 20 IDs at a time:
