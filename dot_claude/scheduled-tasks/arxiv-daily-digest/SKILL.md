@@ -18,7 +18,7 @@ Kiyam works on:
 - Large-scale structure statistics: power spectra, higher-order statistics
 - Neural posterior/likelihood/ratio estimation for cosmological parameter inference
 - Continuous normalising flows, diffusion-based generative models for inference
-- Python cosmology tools: JAX-COSMO, CAMB, healpy, swyft, lampe, numpyro
+- Python cosmology tools: JAX-COSMO, CAMB, harmonic, healpy, swyft, lampe, numpyro, sbi
 
 Kiyam's own papers (for context on depth/style of research):
 - arXiv:2404.15402 — KiDS-SBI: Simulation-based inference analysis of KiDS-1000 cosmic shear
@@ -31,11 +31,18 @@ Kiyam's own papers (for context on depth/style of research):
 ## Step-by-step instructions
 
 ### Step 0 — Load Kiyam's paper cache
-Read the file at `~/.claude/scheduled-tasks/arxiv-daily-digest/my_papers_cache.md` (expand `~` to the actual home directory, e.g. `/Users/kiyam/.claude/scheduled-tasks/arxiv-daily-digest/my_papers_cache.md`).
+Read the file at `~/.claude/scheduled-tasks/arxiv-daily-digest/my_papers_cache.md` (expand `~` to the actual home directory at run time, e.g. `/Users/kiyam`).
 
 This file contains abstracts and key sections from Kiyam's own published papers. Use the content to calibrate your relevance scoring in Step 3: understand the specific methods, datasets, and problem framings Kiyam works with, and score new papers higher when they closely relate to those specific approaches (not just the broad topic area).
 
 If the file does not exist, skip this step and proceed with the topic list above as the sole reference.
+
+### Step 0b — Load previously recommended papers
+Read the file at `~/.claude/scheduled-tasks/arxiv-daily-digest/seen_papers.txt` (expand `~` to the actual home directory at run time).
+
+This file contains one arXiv ID per line (e.g. `2501.12345`) for every paper that has already been recommended in a past digest. Keep this list in memory as the **seen set**.
+
+If the file does not exist, treat the seen set as empty and continue.
 
 ### Step 1 — Scrape arXiv listing pages
 Use WebFetch to fetch each of these four listing pages. For each page, extract the arXiv IDs of **new submissions only** (not cross-lists or replacements):
@@ -58,7 +65,9 @@ From each response, extract for each paper:
 - Submission date
 
 ### Step 3 — Score relevance
-Read each paper's title and abstract. Assign a relevance score from 0–10 based on how closely it matches Kiyam's interests above. Use the paper cache loaded in Step 0 for finer calibration: papers that use similar methods, datasets (KiDS, Euclid, LSST), or problem framings to Kiyam's own work should score higher. Be strict: only score ≥6 if the paper directly relates to SBI, weak lensing, normalizing flows, diffusion models, Bayesian model comparison, scattering transforms, wavelet methods, spherical CNNs, field level inference or ML methods for cosmological inference.
+**First, remove any paper whose arXiv ID is in the seen set loaded in Step 0b.** Do not score or include those papers.
+
+For the remaining papers, read each paper's title and abstract. Assign a relevance score from 0–10 based on how closely it matches Kiyam's interests above. Use the paper cache loaded in Step 0 for finer calibration: papers that use similar methods, datasets (KiDS, Euclid, LSST), or problem framings to Kiyam's own work should score higher. Be strict: only score ≥6 if the paper directly relates to SBI, weak lensing, normalizing flows, diffusion models, Bayesian model comparison, scattering transforms, wavelet methods, spherical CNNs, field level inference or ML methods for cosmological inference.
 
 Keep only papers with score ≥ 6. Aim for at most 15 papers — if more score ≥6 pick the top 15 by score.
 
@@ -75,7 +84,7 @@ Write a 3–5 sentence summary that covers:
 
 ### Step 5 — Write markdown digest to Obsidian
 Write the final digest as a markdown file to:
-`/Users/kiyam/Library/Mobile Documents/iCloud~md~obsidian/Documents/Kiyam's Notes/ArXiv/digest_YYYY-MM-DD.md`
+`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Kiyam's Notes/ArXiv/digest_YYYY-MM-DD.md` (expand `~` to the actual home directory at run time)
 
 where `YYYY-MM-DD` is today's date.
 
@@ -119,6 +128,11 @@ The file should have this structure:
 Repeat the paper section for each relevant paper, ordered by relevance score (highest first).
 
 If no papers score ≥6, write a short digest noting that no highly relevant papers were found today.
+
+### Step 6 — Update seen papers cache
+Append the arXiv IDs of every paper included in today's digest (one ID per line) to `~/.claude/scheduled-tasks/arxiv-daily-digest/seen_papers.txt` (expand `~` to the actual home directory at run time).
+
+If the file does not exist, create it. If no papers were selected today, skip this step.
 
 ## Important notes
 - Today's date can be obtained by running: `date +%Y-%m-%d` via Bash
