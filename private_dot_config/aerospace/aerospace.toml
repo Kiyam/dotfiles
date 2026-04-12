@@ -228,7 +228,7 @@ if.app-id = 'com.todoist.mac.Todoist'
 run = 'move-node-to-workspace o'
 
 [[on-window-detected]]
-if.app-id = 'com.spotify.client'
+if.app-id = 'com.tidal.desktop'
 run = 'move-node-to-workspace 0'
 
 [[on-window-detected]]
