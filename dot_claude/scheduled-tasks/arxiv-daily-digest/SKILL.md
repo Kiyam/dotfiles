@@ -71,11 +71,34 @@ For the remaining papers, read each paper's title and abstract. Assign a relevan
 
 Keep only papers with score ≥ 6. Aim for at most 15 papers — if more score ≥6 pick the top 15 by score.
 
-### Step 4 — Fetch full text and summarise
-For each relevant paper, fetch the arXiv HTML endpoint:
-`https://arxiv.org/html/ARXIV_ID`
+### Step 4 — Fetch full text via arxiv-rag and summarise
+Use the `arxiv-rag` skill to pull clean full-text Markdown for the selected papers, rather than scraping the arXiv HTML view (which often truncates or mangles text).
 
-From the HTML, extract the main body text (focus on abstract, introduction, and conclusion sections). If the HTML version is unavailable (404), fall back to the abstract.
+1. Build a synthetic BibTeX file from the papers selected in Step 3, one entry per paper, using the arXiv ID as the citekey, e.g.:
+
+   ```bibtex
+   @article{a2606_25596,
+     title = {Slay the Shear: A Unified Statistical Framework for Weak Gravitational Lensing Shear Estimation},
+     author = {Shurui Lin and Xiangchong Li and Xin Liu},
+     year = {2026},
+     eprint = {2606.25596},
+     archivePrefix = {arXiv}
+   }
+   ```
+
+   Write it to a temp path, e.g. `/tmp/arxiv-digest-YYYY-MM-DD.bib`.
+
+2. Run:
+
+   ```bash
+   python3 ~/.claude/skills/arxiv-rag/fetch_arxiv_papers.py \
+       --bib /tmp/arxiv-digest-YYYY-MM-DD.bib \
+       --out ~/.claude/scheduled-tasks/arxiv-daily-digest/rag_corpus
+   ```
+
+   (expand `~` to the actual home directory at run time). This downloads each paper's LaTeX source, flattens it, and writes `~/.claude/scheduled-tasks/arxiv-daily-digest/rag_corpus/<arxiv_id>.md`. The corpus directory and its `.cache/` accumulate across runs — entries already present are skipped automatically, so this is cheap on repeat days. Treat this corpus as machine-readable RAG material, not a human-reading copy — readers should click through to the arXiv link instead.
+
+3. For each paper, read its `rag_corpus/<arxiv_id>.md` file and use the abstract/introduction/conclusion content to write the summary. If the entry in `index.md` shows a non-"ok" status (e.g. `no-tex`, `extract-fail`, `download-fail` — these happen for PDF-only submissions or unusual source formats), fall back to the abstract text already fetched in Step 2.
 
 Write a 3–5 sentence summary that covers:
 1. What problem the paper addresses
@@ -137,6 +160,7 @@ If the file does not exist, create it. If no papers were selected today, skip th
 ## Important notes
 - Today's date can be obtained by running: `date +%Y-%m-%d` via Bash
 - The Obsidian vault folder already exists; just write the file directly
+- The `rag_corpus/` directory under `~/.claude/scheduled-tasks/arxiv-daily-digest/` is a persistent, machine-readable cache — do not write it into the Obsidian vault, and do not delete it between runs
 - Do not download any PDFs
 - Be concise in summaries — quality over quantity
-- If fetching a page fails, skip it and continue with the rest
+- If fetching a page or running `fetch_arxiv_papers.py` fails for a paper, skip it and fall back to the abstract, then continue with the rest
