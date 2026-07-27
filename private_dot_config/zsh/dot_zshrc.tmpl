@@ -244,9 +244,9 @@ load_secrets() {
 
 # ---- auto start TMUX only if on mac ----
 {{ if eq .chezmoi.os "darwin" }}
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach -t evo || tmux new -s evo
-fi
+#if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+#    tmux attach -t evo || tmux new -s evo
+#fi
 {{ end }}
 
 # --- Linux Homebrew ---
