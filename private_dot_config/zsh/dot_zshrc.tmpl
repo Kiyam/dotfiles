@@ -16,6 +16,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 ZSH_THEME="gnzh"
 TERM=xterm
 {{ else if eq .chezmoi.os "darwin" }}
+export SPACESHIP_PROMPT_ASYNC=false
 source $(brew --prefix)/opt/spaceship/spaceship.zsh
 {{ else }}
 ZSH_THEME="spaceship"
