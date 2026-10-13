@@ -3,6 +3,14 @@ case $- in
 *i*) ;;
 *) return ;;
 esac
+{{- if hasPrefix "inf0" .chezmoi.hostname }}
+
+# Login shell is bash on infinity (NIS, no chsh), so hand over to zsh.
+# Only for login shells, so typing `bash` still gives you bash.
+if shopt -q login_shell && [ -x /usr/bin/zsh ]; then
+  exec /usr/bin/zsh -l
+fi
+{{- end }}
 
 # Path to your oh-my-bash installation.
 export OSH=$HOME/.oh-my-bash
