@@ -23,7 +23,11 @@ ZSH_THEME="spaceship"
 {{ end }}
 
 ## Enable auto oh my zsh updates
+{{- if eq .chezmoi.hostname "hypatia-login" }}
+zstyle ':omz:update' mode disabled  # zsh 5.0.2 here, newer omz breaks it
+{{ else }}
 zstyle ':omz:update' mode auto      # update automatically without asking
+{{- end }}
 
 
 # Uncomment the following line to enable command auto-correction.
