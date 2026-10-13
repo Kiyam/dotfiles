@@ -5,9 +5,10 @@ case $- in
 esac
 {{- if hasPrefix "inf0" .chezmoi.hostname }}
 
-# Login shell is bash on infinity (NIS, no chsh), so hand over to zsh.
-# Only for login shells, so typing `bash` still gives you bash.
-if shopt -q login_shell && [ -x /usr/bin/zsh ]; then
+# Default shell is bash on infinity (NIS, no chsh), so hand over to zsh.
+# Covers non-login shells too (herdr, tmux panes). Skipped when the parent
+# is zsh, so typing `bash` still gives you bash.
+if [ -x /usr/bin/zsh ] && [ "$(ps -o comm= -p $PPID 2>/dev/null)" != zsh ]; then
   exec /usr/bin/zsh -l
 fi
 {{- end }}
@@ -91,7 +92,7 @@ plugins=(
 #      plugins+=(tmux-autoattach)
 #  fi
 
-source "$OSH"/oh-my-bash.sh
+[ -f "$OSH"/oh-my-bash.sh ] && source "$OSH"/oh-my-bash.sh
 
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"
