@@ -233,6 +233,11 @@ export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export PATH="/opt/homebrew/lib/ruby/gems/3.4.0/bin:$PATH"
 {{ end }}
 
+# ---- Android SDK platform-tools (adb, fastboot) for MacOS -----
+{{ if eq .chezmoi.os "darwin" }}
+export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
+{{ end }}
+
 # ---- start clifton for isambard only on MacOS -----
 {{ if eq .chezmoi.os "darwin" }}
 export PATH="/Users/kiyam/Applications:$PATH"
@@ -265,3 +270,7 @@ export PATH="/home/kiyam/.juliaup/bin:$PATH"
 {{ else if eq .chezmoi.os "darwin" }}
 export PATH="/Users/kiyam/.juliaup/bin:$PATH"
 {{ end }}
+
+# Drop duplicate PATH entries when nested shells re-source this file.
+# Keep last: `export PATH=...` bypasses the unique flag, so dedupe after all of them.
+typeset -U path
