@@ -342,9 +342,18 @@ def extract_source(src_path: Path, work_dir: Path) -> tuple[Path | None, str]:
     # Try tar.gz first
     try:
         with tarfile.open(fileobj=io.BytesIO(data), mode="r:*") as tf:
-            tf.extractall(work_dir, filter="data")  # py3.12+ safe filter
+            try:
+                tf.extractall(work_dir, filter="data")  # py3.12+ safe filter
+            except TypeError:
+                # Older Python (e.g. macOS's 3.9) has no filter: extract only
+                # regular files/dirs that stay inside work_dir.
+                root = work_dir.resolve()
+                safe = [m for m in tf.getmembers()
+                        if (m.isfile() or m.isdir())
+                        and (root / m.name).resolve().is_relative_to(root)]
+                tf.extractall(work_dir, members=safe)
         return work_dir, ""
-    except (tarfile.ReadError, TypeError):
+    except tarfile.ReadError:
         pass
     except Exception as e:
         print(f"  ! tar extract failed: {e}", file=sys.stderr)
@@ -506,6 +515,43 @@ class Result:
     note: str = ""
 
 
+ARXIV_ID_RE = re.compile(r"([a-z\-]+/\d{7}|\d{4}\.\d{4,5})(v\d+)?", re.IGNORECASE)
+TITLE_STOPWORDS = {"a", "an", "the", "on", "of", "for", "and", "in", "to", "with"}
+
+
+def entry_from_arxiv(spec: str) -> BibEntry | None:
+    """Build a BibEntry for one arXiv paper (id, arXiv:id or abs/pdf URL),
+    filling title/authors/year from the arXiv API."""
+    m = ARXIV_ID_RE.search(spec)
+    if not m:
+        print(f"  ! not an arXiv id: {spec!r}", file=sys.stderr)
+        return None
+    aid = m.group(1)
+    url = f"{ARXIV_API_URL}?id_list={urllib.parse.quote(aid)}&max_results=1"
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            xml = r.read().decode("utf-8", errors="replace")
+        time.sleep(API_DELAY_S)
+    except Exception as e:
+        print(f"  ! arxiv API error for {aid}: {e}", file=sys.stderr)
+        xml = ""
+    entry_xml = xml.split("<entry>", 1)[1] if "<entry>" in xml else ""
+    title_m = re.search(r"<title>(.*?)</title>", entry_xml, re.DOTALL)
+    year_m = re.search(r"<published>(\d{4})", entry_xml)
+    authors = re.findall(r"<name>(.*?)</name>", entry_xml)
+    title = re.sub(r"\s+", " ", title_m.group(1)).strip() if title_m else ""
+    year = year_m.group(1) if year_m else ""
+    last = _slugify(authors[0].split()[-1]) if authors else ""
+    word = next((_slugify(w) for w in title.split()
+                 if _slugify(w) and _slugify(w) not in TITLE_STOPWORDS), "")
+    key = f"{last}{year}{word}" or _slugify(aid)
+    fields = {"title": title, "author": " and ".join(authors),
+              "year": year, "eprint": aid, "archiveprefix": "arXiv"}
+    return BibEntry(key=key, entry_type="misc",
+                    fields={k: v for k, v in fields.items() if v})
+
+
 def process_entry(entry: BibEntry, out_dir: Path, cache_dir: Path,
                   use_pandoc: bool, force: bool,
                   search_fallback: bool = False,
@@ -649,12 +695,14 @@ def main(argv: list[str] | None = None) -> int:
                     help="Skip pandoc even if installed")
     ap.add_argument("--search-fallback", action="store_true",
                     help="When an entry has no eprint, query the arXiv API by title")
+    ap.add_argument("--arxiv", action="append", default=[], metavar="ID",
+                    help="Single arXiv paper by id, arXiv:id or URL; no .bib needed (repeatable)")
     ap.add_argument("--id", action="append", default=[],
                     metavar="KEY=ARXIVID",
                     help="Manually inject an arXiv id for a citekey (repeatable)")
     args = ap.parse_args(argv)
-    if not args.bib and not args.refs:
-        ap.error("at least one of --bib or --refs is required")
+    if not args.bib and not args.refs and not args.arxiv:
+        ap.error("at least one of --bib, --refs or --arxiv is required")
     id_overrides: dict[str, str] = {}
     for spec in args.id:
         if "=" not in spec:
@@ -685,8 +733,14 @@ def main(argv: list[str] | None = None) -> int:
                 continue
             seen_keys.add(e.key)
             entries.append(e)
+    for spec in args.arxiv:
+        e = entry_from_arxiv(spec)
+        if e and e.key not in seen_keys:
+            seen_keys.add(e.key)
+            entries.append(e)
     print(f"Parsed {len(entries)} unique entries "
-          f"from {len(args.bib)} bib + {len(args.refs)} refs file(s)")
+          f"from {len(args.bib)} bib + {len(args.refs)} refs file(s)"
+          f" + {len(args.arxiv)} --arxiv id(s)")
 
     if only:
         entries = [e for e in entries if e.key in only]

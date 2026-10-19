@@ -8,8 +8,9 @@ description: >
   converts to Markdown (pandoc if installed, light cleanup otherwise),
   and writes one .md per paper plus an index. Trigger on requests like
   "fetch the papers in this bib", "download tex sources for my references",
-  "build a RAG corpus from these citations", or "pull arxiv sources for
-  every paper I cite". Skip when the user only wants metadata, PDF
+  "build a RAG corpus from these citations", "pull arxiv sources for
+  every paper I cite", or for a single paper: "turn this arXiv paper into
+  markdown", "get the tex source of 2401.12345 as md" (use --arxiv). Skip when the user only wants metadata, PDF
   downloads, or abstracts — this skill is specifically for full LaTeX
   source -> Markdown.
 triggers:
@@ -97,6 +98,17 @@ citekey.
   for substantially cleaner Markdown.
 
 ## Examples
+
+One paper, no `.bib` needed. Accepts `2401.12345`, `arXiv:2401.12345v2` or an
+`arxiv.org/abs/...` / `/pdf/...` URL; title, authors and year come from the
+arXiv API and the file is named `<firstauthor><year><firstword>.md`:
+
+```bash
+python3 ~/.claude/skills/arxiv-rag/fetch_arxiv_papers.py \
+    --arxiv https://arxiv.org/abs/1706.03762 --out references/papers
+```
+
+`--arxiv` is repeatable and can be combined with `--bib`/`--refs`.
 
 Build a RAG corpus from both bib files in this repo:
 
