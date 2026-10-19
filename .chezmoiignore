@@ -12,3 +12,5 @@ Appdata # only manage on windows
 .config/ghostty/config # only managed on macOS
 .config/aerospace/aerospace.toml
 {{- end }}
+
+.claude/skills/**/__pycache__
