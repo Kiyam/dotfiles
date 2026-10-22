@@ -14,3 +14,7 @@ Appdata # only manage on windows
 {{- end }}
 
 .claude/skills/**/__pycache__
+
+{{- if not (has .chezmoi.hostname (list "Kiyams-Macbook-Air" "apollo" "prometheus")) }}
+.config/research/secrets.env
+{{- end }}
