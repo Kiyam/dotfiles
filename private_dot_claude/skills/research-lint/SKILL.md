@@ -14,6 +14,8 @@ Read `~/Research/CLAUDE.md` first. Optional focus: $ARGUMENTS
    - Claims superseded by newer sources but not updated.
    - Methods/quantities mentioned on several pages without their own concept page.
    - Equation blocks missing a symbol in their table, provenance, or validity line.
+   - Person pages linked from fewer than two sources (second-paper rule), and authors who
+     now appear in two sources without a person page.
    - Pages filed under the wrong type: a dataset, simulation suite or index (e.g. a stock index)
      written as an entity belongs in `concepts/`; an `entity_type` that doesn't fit (a market
      index is not an `instrument`).

@@ -53,7 +53,9 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
    - **Concept pages** for the methods, models and quantities it uses or introduces, with
      equation blocks per the "Equation blocks" section for the equations someone would need
      to implement. Update existing concept pages rather than duplicating; reconcile notation.
-   - **Entity pages** for key authors, surveys/instruments and software/codes.
+   - **Entity pages** for surveys/instruments and software/codes; for people, follow the
+     second-paper rule in the "Page types and frontmatter" section (search existing
+     sources' `authors:` for a match).
    - **Related papers**: typed links to sources already in the wiki, both ways.
    - **Topic hub(s)**: link every new/updated page; revise "Current picture" if this paper
      changes it.
