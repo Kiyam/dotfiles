@@ -22,6 +22,6 @@ Appdata # only manage on windows
 .claude/hooks
 {{- end }}
 
-{{- if eq .chezmoi.hostname "ursula" }}
-.claude # no Claude Code on ursula
+{{- if or (has .chezmoi.hostname (list "ursula" "hypatia-login")) (hasPrefix "inf" .chezmoi.hostname) }}
+.claude # no Claude Code on ursula, hypatia or infinity
 {{- end }}
