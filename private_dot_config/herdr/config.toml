@@ -16,4 +16,4 @@ key = "prefix+x"
 type = "popup"
 command = "$HOME/.config/herdr/confirm-close-pane.sh"
 width = 64
-height = 11
+height = 12
