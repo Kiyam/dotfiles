@@ -13,7 +13,7 @@
         ]
       }
     ],
-    "SessionStart": {{ if lookPath "herdr" }}[{"matcher":"^(startup|resume|clear|compact|fork)$","hooks":[{"type":"command","command":"bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session","timeout":10}]}]{{ else }}[]{{ end }}
+    "SessionStart": {{ if stat (joinPath .chezmoi.homeDir ".claude/hooks/herdr-agent-state.sh") }}[{"matcher":"^(startup|resume|clear|compact|fork)$","hooks":[{"type":"command","command":"bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session","timeout":10}]}]{{ else }}[]{{ end }}
   },
   "enabledPlugins": {
     "github@claude-plugins-official": false,
