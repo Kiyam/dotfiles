@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily arXiv digest into ~/Research (pushes to Forgejo)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/research-digest-cron
+TimeoutStartSec=45min

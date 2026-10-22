@@ -25,3 +25,8 @@ Appdata # only manage on windows
 {{- if or (has .chezmoi.hostname (list "ursula" "hypatia-login")) (hasPrefix "inf" .chezmoi.hostname) }}
 .claude # no Claude Code on ursula, hypatia or infinity
 {{- end }}
+
+{{- if ne .chezmoi.hostname "prometheus" }}
+.config/systemd/user/research-digest.service
+.config/systemd/user/research-digest.timer
+{{- end }}

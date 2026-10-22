@@ -1,0 +1,10 @@
+[Unit]
+Description=Run the arXiv digest on weekday mornings (after arXiv posts, clear of the 01:30 UTC Proxmox backup)
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 03:30:00 UTC
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

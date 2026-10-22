@@ -1,13 +1,10 @@
 #!/bin/sh
-# Daily arXiv digest (cron on Prometheus): runs /research-digest, which commits and pushes
-# to ~/Research with the repo-only deploy key. Log: ~/.cache/arxiv-digest/cron.log
+# Daily arXiv digest (systemd user timer on Prometheus): runs /research-digest, which
+# commits and pushes to ~/Research with the repo-only deploy key.
+# Logs: journalctl --user -u research-digest
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
 export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/research_deploy -o IdentitiesOnly=yes -o BatchMode=yes"
-log="$HOME/.cache/arxiv-digest/cron.log"
-mkdir -p "$(dirname "$log")"
 cd "$HOME/Research" || exit 1
-{
-    echo "=== $(date -Is)"
-    echo "/research-digest" | claude -p --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch"
-    echo "=== exit $?"
-} >> "$log" 2>&1
+exec claude -p --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch" <<EOF
+/research-digest
+EOF
