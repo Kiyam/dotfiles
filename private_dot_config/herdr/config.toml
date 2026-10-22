@@ -13,7 +13,6 @@ close_pane = ""
 
 [[keys.command]]
 key = "prefix+x"
-type = "popup"
-command = "$HOME/.config/herdr/confirm-close-pane.sh"
-width = 64
-height = 12
+type = "plugin_action"
+command = "kiyam.close-pane.confirm"
+description = "close pane (confirm)"

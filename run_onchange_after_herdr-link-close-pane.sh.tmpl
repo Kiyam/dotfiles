@@ -1,0 +1,6 @@
+#!/bin/sh
+# Link the herdr close-pane plugin; reruns when its manifest changes.
+# manifest hash: {{ include "private_dot_config/herdr/close-pane/herdr-plugin.toml" | sha256sum }}
+PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
+command -v herdr >/dev/null || exit 0
+herdr plugin link "$HOME/.config/herdr/close-pane" >/dev/null

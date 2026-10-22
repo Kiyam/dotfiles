@@ -1,0 +1,19 @@
+id = "kiyam.close-pane"
+name = "Close pane"
+version = "0.1.0"
+min_herdr_version = "0.9.5"
+description = "Ask before closing the focused pane"
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "confirm"
+title = "Close pane (confirm)"
+command = ["sh", "-c", "exec \"$HERDR_BIN_PATH\" plugin pane open --plugin kiyam.close-pane --entrypoint confirm >/dev/null"]
+
+[[panes]]
+id = "confirm"
+title = "Close pane"
+placement = "popup"
+width = 64
+height = 12
+command = ["sh", "confirm.sh"]
