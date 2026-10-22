@@ -17,4 +17,7 @@ Appdata # only manage on windows
 
 {{- if not (has .chezmoi.hostname (list "Kiyams-Macbook-Air" "apollo" "prometheus")) }}
 .config/research/secrets.env
+.claude/settings.json
+.claude/statusline-combined.sh
+.claude/hooks
 {{- end }}
