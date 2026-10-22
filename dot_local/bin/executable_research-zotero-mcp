@@ -1,0 +1,10 @@
+#!/bin/sh
+# Start zotero-mcp: local Zotero app on macOS, zotero.org web API elsewhere.
+if [ "$(uname)" = Darwin ]; then
+    ZOTERO_LOCAL=true exec zotero-mcp "$@"
+fi
+secrets="$HOME/.config/research/secrets.env"
+[ -r "$secrets" ] || { echo "research-zotero-mcp: missing $secrets (run chezmoi apply)" >&2; exit 1; }
+set -a; . "$secrets"; set +a
+export ZOTERO_LIBRARY_TYPE=user
+exec zotero-mcp "$@"

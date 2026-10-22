@@ -1,0 +1,8 @@
+#!/bin/sh
+# Start mcp-ads-arxiv with research secrets visible to it only.
+secrets="$HOME/.config/research/secrets.env"
+[ -r "$secrets" ] || { echo "research-ads-mcp: missing $secrets (run chezmoi apply)" >&2; exit 1; }
+set -a; . "$secrets"; set +a
+# Paper cache stays outside ~/Research: the server creates a papers/ dir in it.
+export LIT_CACHE_DIR="$HOME/.cache/mcp-ads-arxiv"
+exec mcp-ads-arxiv "$@"
