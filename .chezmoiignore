@@ -21,3 +21,7 @@ Appdata # only manage on windows
 .claude/statusline-combined.sh
 .claude/hooks
 {{- end }}
+
+{{- if eq .chezmoi.hostname "ursula" }}
+.claude # no Claude Code on ursula
+{{- end }}
