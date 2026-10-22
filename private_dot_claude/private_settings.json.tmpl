@@ -1,0 +1,70 @@
+{
+  "model": "opus",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/rm_confirmation.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": {{ if lookPath "herdr" }}[{"matcher":"^(startup|resume|clear|compact|fork)$","hooks":[{"type":"command","command":"bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session","timeout":10}]}]{{ else }}[]{{ end }}
+  },
+  "enabledPlugins": {
+    "github@claude-plugins-official": false,
+    "caveman@caveman": true,
+    "ponytail@ponytail": true,
+    "superpowers@claude-plugins-official": true,
+    "code-review@claude-plugins-official": false,
+    "frontend-design@claude-plugins-official": false,
+    "skill-creator@claude-plugins-official": false,
+    "claude-md-management@claude-plugins-official": false,
+    "adobe-for-creativity@claude-plugins-official": false,
+    "data@synced": false,
+    "marketing@synced": false,
+    "design@synced": false,
+    "productivity@synced": false,
+    "cowork-plugin-management@synced": false,
+    "pdf-viewer@synced": false
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  },
+  "theme": "dark-ansi",
+  "statusLine": {
+    "type": "command",
+    "command": "{{ .chezmoi.homeDir }}/.claude/statusline-combined.sh"
+  },
+  "skillOverrides": {
+    "jax-review": "off",
+    "paper-summariser": "off",
+    "anthropic-skills:docs": "off",
+    "anthropic-skills:docx": "off",
+    "anthropic-skills:google-workspace": "off",
+    "anthropic-skills:import-memory": "off",
+    "anthropic-skills:morning": "off",
+    "anthropic-skills:pdf": "off",
+    "anthropic-skills:pptx": "off",
+    "anthropic-skills:skill-creator": "off",
+    "anthropic-skills:xlsx": "off"
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  }
+}
