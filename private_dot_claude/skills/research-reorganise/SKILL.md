@@ -13,6 +13,8 @@ Read `~/Research/CLAUDE.md` first. Reconsider: $ARGUMENTS (or the whole topic st
 3. Propose changes, each with a reason and the pages/items it moves: **merge** (A + B → C),
    **split** (A → A1 + A2, with which sources go where), **rename**, **new** topic, **retire**
    a topic, or tag clean-ups. Stop and wait for Kiyam to accept, edit or drop each one.
+   Exception: if the arguments name one exact change (e.g. "rename X to Y"), that request is
+   the approval — apply it directly. Anything you propose yourself always waits.
 4. For each accepted change, apply both sides:
    - **Zotero**: rename with `zotero_update_collection` (keeps the key); create new
      collections; move items with `zotero_set_item_collections`. Delete a collection only when

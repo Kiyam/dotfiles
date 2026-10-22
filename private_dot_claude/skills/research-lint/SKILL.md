@@ -14,6 +14,9 @@ Read `~/Research/CLAUDE.md` first. Optional focus: $ARGUMENTS
    - Claims superseded by newer sources but not updated.
    - Methods/quantities mentioned on several pages without their own concept page.
    - Equation blocks missing a symbol in their table, provenance, or validity line.
+   - Pages filed under the wrong type: a dataset, simulation suite or index (e.g. a stock index)
+     written as an entity belongs in `concepts/`; an `entity_type` that doesn't fit (a market
+     index is not an `instrument`).
    - Gaps a search could fill (a later published version, an obvious follow-up paper).
 4. **Zotero checks** (rules in the "Zotero conventions" section):
    - Regular items in no top-level topic collection.
