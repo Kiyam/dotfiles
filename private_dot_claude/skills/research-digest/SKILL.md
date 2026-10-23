@@ -46,11 +46,14 @@ Kiyam's own papers: arXiv:2606.23346, 2404.15402, 2410.11883, 2506.04339, 2212.0
 
 Kiyam's active projects (the anchors for the top scores):
 - `kids_sbi` — SBI for KiDS-Legacy cosmic shear: GLASS forward sims with variable depth,
-  score/MOPED compression, NLE ensemble, TARP and misspecification tests.
+  score/MOPED compression, NLE ensemble, TARP and misspecification tests; compared against
+  an explicit-likelihood analysis (cosmosis + nautilus, scaling S8 covariance) and run on
+  the real KiDS-Legacy data.
 - `gc_sbi` — sequential NLE of (Ωm, σ8) from P(k) with disco-DJ: simulation acquisition,
   Fisher pre-training, next multi-fidelity / transfer learning.
 - `spherical_inference` — field-level NUTS over a differentiable spherical weak-lensing
-  forward model (s2fft, JAX) on GPUs.
+  forward model (s2fft, JAX) on GPUs: a Bayesian hierarchical model sampling cosmology and
+  GLASS log-normal latent fields, with an analytic field metric (mass matrix) for mixing.
 
 Also read `~/Research/wiki/index.md` and the topic hubs in `~/Research/wiki/topics/` — they
 show what Kiyam is actively working on and should nudge scores.
