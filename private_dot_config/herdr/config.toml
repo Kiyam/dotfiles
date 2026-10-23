@@ -16,3 +16,53 @@ key = "prefix+x"
 type = "plugin_action"
 command = "kiyam.close-pane.confirm"
 description = "close pane (confirm)"
+
+# vim-herdr-navigation: Ctrl+h/j/k/l across herdr panes and nvim splits
+[[keys.command]]
+key = "ctrl+h"
+type = "plugin_action"
+command = "vim-herdr-navigation.left"
+description = "navigate left (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "plugin_action"
+command = "vim-herdr-navigation.down"
+description = "navigate down (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "plugin_action"
+command = "vim-herdr-navigation.up"
+description = "navigate up (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "plugin_action"
+command = "vim-herdr-navigation.right"
+description = "navigate right (vim/herdr)"
+
+# herdr-hunk-diff: review agent diffs and send inline comments back
+[[keys.command]]
+key = "prefix+shift+h"
+type = "plugin_action"
+command = "jhochenbaum.hunkdiff.review"
+description = "hunk: review changes"
+
+[[keys.command]]
+key = "prefix+shift+s"
+type = "plugin_action"
+command = "jhochenbaum.hunkdiff.send-review"
+description = "hunk: send review to agent"
+
+[[keys.command]]
+key = "prefix+shift+c"
+type = "plugin_action"
+command = "jhochenbaum.hunkdiff.review:commit"
+description = "hunk: review the last commit"
+
+[[keys.command]]
+key = "prefix+shift+a"
+type = "plugin_action"
+command = "jhochenbaum.hunkdiff.review:staged"
+description = "hunk: review staged changes"
