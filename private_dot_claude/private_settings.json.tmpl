@@ -13,7 +13,7 @@
         ]
       }
     ],
-    "SessionStart": {{ if stat (joinPath .chezmoi.homeDir ".claude/hooks/herdr-agent-state.sh") }}[{"matcher":"^(startup|resume|clear|compact|fork)$","hooks":[{"type":"command","command":"bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session","timeout":10}]}]{{ else }}[]{{ end }}
+    "SessionStart": [{"matcher":"^(startup|resume|clear|compact|fork)$","hooks":[{"type":"command","command":"m='{{ .chezmoi.homeDir }}/.claude/shared-memory'; GIT_SSH_COMMAND='ssh -o ConnectTimeout=3 -o BatchMode=yes' git -C \"$m\" pull -q --ff-only >/dev/null 2>&1; [ -f \"$m/index.md\" ] && { echo \"Shared memory index ($m, files relative to it):\"; cat \"$m/index.md\"; }; true","timeout":8}{{ if stat (joinPath .chezmoi.homeDir ".claude/hooks/herdr-agent-state.sh") }},{"type":"command","command":"bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session","timeout":10}{{ end }}]}]
   },
   "enabledPlugins": {
     "github@claude-plugins-official": false,

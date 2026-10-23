@@ -15,7 +15,7 @@ Appdata # only manage on windows
 
 .claude/skills/**/__pycache__
 
-{{- if not (has .chezmoi.hostname (list "kiyam-macbook" "apollo" "prometheus")) }}
+{{- if not (has .chezmoi.hostname (list "kiyam-macbook" "Kiyams-Macbook-Air" "apollo" "prometheus")) }}
 .config/research/secrets.env
 .claude/settings.json
 .claude/statusline-combined.sh
