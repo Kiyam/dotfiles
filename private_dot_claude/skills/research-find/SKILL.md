@@ -17,7 +17,8 @@ When the argument is an arXiv id, bibcode, DOI, or something that reads as one p
 2. Dedupe per the "Zotero conventions" section. If it's already in Zotero, say so (with its
    collections and whether it has a `wiki/sources/` page) and stop.
 3. Otherwise create the item with full metadata and identifiers per the "Zotero conventions"
-   section, add it to `Ingest`, and attach the arXiv PDF if one exists (`fetch_pdf`).
+   section, add it to `Ingest`, and — on the Mac only — attach the arXiv PDF if one exists
+   (`fetch_pdf`); on servers attach nothing (see the "Zotero conventions" section).
 4. Offer to ingest it now (`/research-ingest <key>`).
 
 ## Discovery

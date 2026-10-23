@@ -14,7 +14,9 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
 - **`inbox`**: every item in the Zotero `Ingest` collection.
 - **`backlog`**: every PDF under `~/Documents/Papers/` (recursive), plus every regular item in
   Zotero that has no `wiki/sources/` page yet (match on `zotero_key` in source frontmatter).
-- **`daily`**: pending ticks in `~/Research/daily/*.md` (see below).
+- **`daily`**: pending ticks in `~/Research/daily/*.md` (see below). **`daily --one`**:
+  process only the single oldest pending tick (oldest digest file first), then stop — the
+  nightly loop on Prometheus calls this repeatedly, one paper per session.
 - **`--batch`**: don't stop to discuss takeaways. `inbox`, `backlog` and `daily` are always
   batch. In batch mode, process papers one at a time to completion and report at the end.
 
@@ -31,7 +33,7 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
    - arXiv id / DOI / PDF → identify per the "Identifying a paper" section, then dedupe per
      the "Zotero conventions" section. Existing item → use it. None → create it with
      `zotero_add_item` (correct type, authors, title, date, abstract, URL, DOI,
-     journal, `Extra`). For a PDF, attach the original as a linked or imported file without
+     journal, `Extra`). Never attach files on servers (see the "Zotero conventions" section). For a local PDF (Mac), attach the original as a linked or imported file without
      moving or modifying it. For a PDF from a folder whose name contains `(unread)`, also add
      the item to `To Read`.
    - Enrich: make sure the item carries the arXiv URL, DOI/journal and the `Extra` lines

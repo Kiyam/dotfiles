@@ -1,10 +1,31 @@
 #!/bin/sh
-# Daily arXiv digest (systemd user timer on Prometheus): runs /research-digest, which
-# commits and pushes to ~/Research with the repo-only deploy key.
+# Nightly on Prometheus (systemd user timer): write today's arXiv digest, then process ticked
+# papers one per Claude session. Commits/pushes use the repo-only deploy key.
 # Logs: journalctl --user -u research-digest
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
 export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/research_deploy -o IdentitiesOnly=yes -o BatchMode=yes"
 cd "$HOME/Research" || exit 1
-exec claude -p --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch" <<EOF
-/research-digest
-EOF
+TOOLS="Bash,Read,Write,Edit,Glob,Grep,WebFetch,mcp__zotero,mcp__mcp-ads-arxiv"
+MAX_TICKS=40  # ponytail: fixed nightly cap; make it an env var if nights start running long
+
+run() {  # $1 = prompt; exits 1 on a usage limit so systemd retries later
+    out=$(printf '%s\n' "$1" | claude -p --allowedTools "$TOOLS" 2>&1); rc=$?
+    printf '%s\n' "$out"
+    case "$out" in *"hit your session limit"*|*"usage limit"*) echo "usage limit: will retry"; exit 1;; esac
+    return $rc
+}
+pending() { grep -hE '^- \[x\] (ingest|to read)[[:space:]]*$' daily/*.md 2>/dev/null | wc -l; }
+
+run "/research-digest" || exit 1
+
+i=0; prev=-1
+while [ "$i" -lt "$MAX_TICKS" ]; do
+    git pull -q --rebase --autostash
+    n=$(pending)
+    [ "$n" -eq 0 ] && { echo "no pending ticks"; break; }
+    [ "$n" -eq "$prev" ] && { echo "a tick was not marked done; stopping to avoid a loop"; break; }
+    prev=$n
+    echo "--- tick $((i+1)): $n pending"
+    run "/research-ingest daily --one"
+    i=$((i+1))
+done
