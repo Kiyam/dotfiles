@@ -55,7 +55,7 @@ working on and should nudge scores.
    seen set (empty if missing).
 2. **Scrape** new submissions only (not cross-lists or replacements) from
    `https://arxiv.org/list/astro-ph.CO/recent`, `.../astro-ph.IM/recent` and
-   `.../stat.ML/recent`. Dedupe; up to 100 ids, prioritising astro-ph.CO and astro-ph.IM.
+   `.../stat.ML/recent` and `.../stat.CO/recent`. Dedupe; up to 100 ids, prioritising astro-ph.CO and astro-ph.IM.
 3. **Metadata**: `https://export.arxiv.org/api/query?id_list=<ids>&max_results=20`, in batches
    of 20 — id, title, first 4 authors, abstract, primary category, submission date.
 4. **Score**: drop ids in the seen set. Score the rest 0–10 against the interests, calibrated
@@ -75,7 +75,7 @@ working on and should nudge scores.
    ```markdown
    # arXiv Digest — YYYY-MM-DD
 
-   **Sources:** `astro-ph.CO`, `astro-ph.IM`, `stat.ML`
+   **Sources:** `astro-ph.CO`, `astro-ph.IM`, `stat.ML`, `stat.CO`
    **Papers scraped:** N
    **Papers selected:** M (relevance ≥ 6/10)
 
