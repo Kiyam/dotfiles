@@ -6,13 +6,19 @@ export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
 export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/research_deploy -o IdentitiesOnly=yes -o BatchMode=yes"
 cd "$HOME/Research" || exit 1
 TOOLS="Bash,Read,Write,Edit,Glob,Grep,WebFetch,mcp__zotero,mcp__mcp-ads-arxiv"
-MAX_TICKS=40  # ponytail: fixed nightly cap; make it an env var if nights start running long
+MAX_TICKS=40  # ponytail: fixed nightly cap (ticks + inbox together); make it an env var if nights run long
 
 run() {  # $1 = prompt; exits 1 on a usage limit so systemd retries later
     out=$(printf '%s\n' "$1" | claude -p --allowedTools "$TOOLS" 2>&1); rc=$?
     printf '%s\n' "$out"
     case "$out" in *"hit your session limit"*|*"usage limit"*) echo "usage limit: will retry"; exit 1;; esac
     return $rc
+}
+inbox() {  # items in Zotero's Ingest collection; secrets stay inside this subshell
+    ( . "$HOME/.config/research/secrets.env"
+      curl -s -D - -o /dev/null -H "Zotero-API-Key: $ZOTERO_API_KEY" \
+        "https://api.zotero.org/users/$ZOTERO_LIBRARY_ID/collections/ZVZ3TU8S/items/top?limit=1&format=keys" ) |
+        tr -d '\r' | awk -F': ' 'tolower($1)=="total-results" {print $2; f=1} END {if (!f) print 0}'
 }
 pending() { grep -hE '^- \[x\] (ingest|to read)[[:space:]]*$' daily/*.md 2>/dev/null | wc -l; }
 
@@ -27,5 +33,17 @@ while [ "$i" -lt "$MAX_TICKS" ]; do
     prev=$n
     echo "--- tick $((i+1)): $n pending"
     run "/research-ingest daily --one"
+    i=$((i+1))
+done
+
+# Then the Zotero Ingest inbox (browser saves, /research-find, imports), same cap and guards.
+prev=-1
+while [ "$i" -lt "$MAX_TICKS" ]; do
+    n=$(inbox)
+    [ "$n" -eq 0 ] && { echo "Ingest inbox empty"; break; }
+    [ "$n" -eq "$prev" ] && { echo "an Ingest item was not filed; stopping to avoid a loop"; break; }
+    prev=$n
+    echo "--- inbox $((i+1)): $n in Ingest"
+    run "/research-ingest inbox --one"
     i=$((i+1))
 done

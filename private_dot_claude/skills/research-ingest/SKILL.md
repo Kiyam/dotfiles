@@ -11,7 +11,8 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
 ## Arguments
 
 - **Zotero item key** (8 chars), **arXiv id**, **DOI**, or **path to a PDF**: one paper.
-- **`inbox`**: every item in the Zotero `Ingest` collection.
+- **`inbox`**: every item in the Zotero `Ingest` collection. **`inbox --one`**: only the single
+  oldest item in `Ingest` (by date added), then stop — used by the nightly loop.
 - **`backlog`**: every PDF under `~/Documents/Papers/` (recursive), plus every regular item in
   Zotero that has no `wiki/sources/` page yet (match on `zotero_key` in source frontmatter).
 - **`daily`**: pending ticks in `~/Research/daily/*.md` (see below). **`daily --one`**:
