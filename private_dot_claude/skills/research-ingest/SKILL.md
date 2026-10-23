@@ -3,6 +3,7 @@ name: research-ingest
 description: Ingest papers into Kiyam's research wiki (~/Research) and file them in Zotero. Invoked only as /research-ingest.
 argument-hint: "<zotero-key | arxiv-id | DOI | pdf-path | inbox | backlog | daily> [--batch]"
 disable-model-invocation: true
+model: sonnet
 ---
 
 Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
@@ -38,7 +39,8 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
      arXiv preprint has since been published; if so set the DOI, journal and type
      `journalArticle`.
 2. **Read it** per the "Identifying a paper" section's full-text order: `.tex` first, then PDF,
-   then OCR. Look at every figure. Also read the item's Zotero notes and PDF annotations
+   then OCR. Read section by section and look only at the key data figures (at most 4), as
+   that section says. Also read the item's Zotero notes and PDF annotations
    (`zotero_get_notes`, `zotero_get_annotations`) — they are Kiyam's own reading notes and
    matter more than anything else on the page.
 3. **Discuss** (unless batch): give Kiyam 3–5 key takeaways, the topic(s) you'd file it
