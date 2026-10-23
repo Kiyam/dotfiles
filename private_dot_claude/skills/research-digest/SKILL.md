@@ -1,12 +1,12 @@
 ---
 name: research-digest
-description: Daily arXiv digest for Kiyam — scrape new papers, score relevance, summarise, and write a tickbox digest to ~/Research/daily/. Runs from cron on Prometheus; invoked only as /research-digest.
+description: Daily arXiv digest for Kiyam — scrape new papers, score relevance, summarise, and write a tickbox digest to ~/Research/daily/. Runs from a systemd user timer on Prometheus; invoked only as /research-digest.
 argument-hint: ""
 disable-model-invocation: true
 ---
 
 Read `~/Research/CLAUDE.md` first (the "Git sync" and "Daily digests" sections). Then build
-today's arXiv digest. This often runs unattended from cron: never ask questions, never stop
+today's arXiv digest. This often runs unattended from a systemd timer: never ask questions, never stop
 for confirmation; if a step fails, skip it, note it in the digest, and carry on.
 
 State lives in the vault: `~/Research/daily/seen_papers.txt` (one arXiv id per line, every
@@ -26,7 +26,20 @@ papers). The full-text cache is machine-local: `~/.cache/arxiv-digest/rag_corpus
 - Large-scale structure statistics: power spectra, higher-order statistics
 - Neural posterior/likelihood/ratio estimation for cosmological parameters
 - Continuous normalising flows, diffusion-based generative models for inference
-- Tools: JAX-COSMO, CAMB, harmonic, healpy, swyft, lampe, numpyro, sbi
+- Sequential SBI and simulation acquisition: SNLE/SNPE, active learning, Bayesian
+  optimisation, BOLFI — inference with as few simulations as possible
+- Multi-fidelity SBI and transfer learning: few expensive plus many cheap simulations,
+  pre-training, emulators
+- Data compression for inference: score/MOPED, Fisher-informed and neural compression
+- Posterior calibration and validation: TARP, SBC, coverage tests, model misspecification
+  in SBI
+- Field-level inference with HMC/NUTS: differentiable (spherical) forward models, Bayesian
+  hierarchical models, sampler performance on GPUs
+- Differentiable large-scale-structure simulators: LPT, particle-mesh codes
+- KiDS-Legacy systematics modelling: variable depth, pseudo-C_ℓ and mixing matrices,
+  log-normal simulations, intrinsic alignments, n(z) uncertainty
+- Tools: JAX-COSMO, CAMB, harmonic, healpy, swyft, lampe, numpyro, sbi, disco-DJ, GLASS,
+  heracles, s2fft, zuko, nflows, blackjax
 
 Kiyam's own papers: arXiv:2606.23346, 2404.15402, 2410.11883, 2506.04339, 2212.04521,
 2410.10616.
@@ -48,7 +61,9 @@ working on and should nudge scores.
 4. **Score**: drop ids in the seen set. Score the rest 0–10 against the interests, calibrated
    by the papers cache. Be strict: ≥6 only if the paper directly relates to SBI, weak lensing,
    normalizing flows, diffusion models, Bayesian model comparison, scattering transforms,
-   wavelets, spherical CNNs, field-level inference, or ML for cosmological inference. Keep
+   wavelets, spherical CNNs, field-level inference, sequential or multi-fidelity SBI, data
+   compression, posterior calibration (TARP/SBC), differentiable LSS simulators, KiDS
+   systematics modelling, or ML for cosmological inference. Keep
    ≥6, at most 15, highest first.
 5. **Full text**: write a BibTeX file of the selected papers (citekey from the id,
    `eprint = {<id>}`, `archivePrefix = {arXiv}`) to a temp file, then run
