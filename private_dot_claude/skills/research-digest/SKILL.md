@@ -64,9 +64,10 @@ show what Kiyam is actively working on and should nudge scores.
    - `daily/my_papers_cache.md` (Kiyam's own papers);
    - the `arxiv:` field of every `wiki/sources/*.md` — papers Kiyam chose to keep (positive
      examples; also the already-ingested set);
-   - the tickboxes in the 20 most recent `daily/digest_*.md`: a paper with `ingest` or
-     `to read` ticked is a positive example; one left unticked in a digest older than 7 days
-     is a weak negative. Note the score each got, to see where past scores were off.
+   - the tickboxes in `daily/digest_*.md` from the last 60 days (read only titles, relevance
+     lines and tickboxes): a paper with `ingest` or `to read` ticked is a positive example;
+     one left unticked in a digest older than 30 days is a weak negative. Note the score each
+     got, to see where past scores were off.
 2. **Scrape** the "New submissions" section only (not cross-lists or replacements) of
    `https://arxiv.org/list/astro-ph.CO/new`, `.../astro-ph.IM/new`, `.../stat.ML/new` and
    `.../stat.CO/new` — the latest mailing, one per weekday run. Dedupe; up to 100 ids,
