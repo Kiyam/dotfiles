@@ -1,2 +1,5 @@
 export XDG_CONFIG_HOME="$HOME/.config"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+# Non-interactive shells (e.g. herdr --remote's server) only read this file; nvm loads later in .zshrc
+typeset -U path
+path=($HOME/.local/bin $HOME/.hunk/bin $HOME/.nvm/versions/node/*/bin(Nn[-1]) $path)
