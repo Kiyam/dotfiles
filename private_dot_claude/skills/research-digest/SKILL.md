@@ -53,10 +53,10 @@ working on and should nudge scores.
    `daily/digest_<today>.md` already exists, stop — today is done.
 1. **Load state**: `daily/my_papers_cache.md` for calibration; `daily/seen_papers.txt` as the
    seen set (empty if missing).
-2. **Scrape** new submissions only (not cross-lists or replacements) from
-   `https://arxiv.org/list/astro-ph.CO/recent`, `.../astro-ph.IM/recent`,
-   `.../stat.ML/recent` and `.../stat.CO/recent`. Dedupe; up to 100 ids, prioritising
-   astro-ph.CO and astro-ph.IM.
+2. **Scrape** the "New submissions" section only (not cross-lists or replacements) of
+   `https://arxiv.org/list/astro-ph.CO/new`, `.../astro-ph.IM/new`, `.../stat.ML/new` and
+   `.../stat.CO/new` — the latest mailing, one per weekday run. Dedupe; up to 100 ids,
+   prioritising astro-ph.CO and astro-ph.IM. Count the ids found before capping.
 3. **Metadata**: `https://export.arxiv.org/api/query?id_list=<ids>&max_results=20`, in batches
    of 20 — id, title, first 4 authors, abstract, primary category, submission date.
 4. **Score**: drop ids in the seen set. Score the rest 0–10 against the interests, calibrated
@@ -77,7 +77,7 @@ working on and should nudge scores.
    # arXiv Digest — YYYY-MM-DD
 
    **Sources:** `astro-ph.CO`, `astro-ph.IM`, `stat.ML`, `stat.CO`
-   **Papers scraped:** N
+   **Papers scraped:** N (cap reached: F found)
    **Papers selected:** M (relevance ≥ 6/10)
 
    ---
@@ -110,7 +110,8 @@ working on and should nudge scores.
    ---
    ```
 
-   Every paper section ends with exactly those two tickboxes. If nothing scored ≥6, write a
+   Keep the "(cap reached: F found)" note only when more than 100 ids were found; otherwise
+   write just `N`. Every paper section ends with exactly those two tickboxes. If nothing scored ≥6, write a
    short digest saying so (no tickboxes).
 8. **Seen set**: append every included id to `daily/seen_papers.txt`.
 9. **Commit and push** per the "Git sync" section (`digest: YYYY-MM-DD`), including the digest
