@@ -54,8 +54,9 @@ working on and should nudge scores.
 1. **Load state**: `daily/my_papers_cache.md` for calibration; `daily/seen_papers.txt` as the
    seen set (empty if missing).
 2. **Scrape** new submissions only (not cross-lists or replacements) from
-   `https://arxiv.org/list/astro-ph.CO/recent`, `.../astro-ph.IM/recent` and
-   `.../stat.ML/recent` and `.../stat.CO/recent`. Dedupe; up to 100 ids, prioritising astro-ph.CO and astro-ph.IM.
+   `https://arxiv.org/list/astro-ph.CO/recent`, `.../astro-ph.IM/recent`,
+   `.../stat.ML/recent` and `.../stat.CO/recent`. Dedupe; up to 100 ids, prioritising
+   astro-ph.CO and astro-ph.IM.
 3. **Metadata**: `https://export.arxiv.org/api/query?id_list=<ids>&max_results=20`, in batches
    of 20 — id, title, first 4 authors, abstract, primary category, submission date.
 4. **Score**: drop ids in the seen set. Score the rest 0–10 against the interests, calibrated
