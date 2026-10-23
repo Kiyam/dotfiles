@@ -2,8 +2,9 @@
 Description=Nightly arXiv digest + ticked-paper ingest into ~/Research (pushes to Forgejo)
 Wants=network-online.target
 After=network-online.target
-# Retry (e.g. Claude usage limit hit): every 45 min, at most 5 attempts in 6 h.
-StartLimitIntervalSec=6h
+# Retry after a usage limit (exit 1): every 75 min, at most 5 starts a day — spans a 5 h limit
+# window, and a 6 h timeout can't loop because the window is a full day.
+StartLimitIntervalSec=24h
 StartLimitBurst=5
 
 [Service]
@@ -11,4 +12,6 @@ Type=oneshot
 ExecStart=%h/.local/bin/research-digest-cron
 TimeoutStartSec=6h
 Restart=on-failure
-RestartSec=45min
+RestartSec=75min
+# Exit 2 = needs Kiyam (git conflict / unpushed work): fail visibly, don't retry.
+RestartPreventExitStatus=2

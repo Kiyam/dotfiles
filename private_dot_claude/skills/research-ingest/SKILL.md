@@ -18,6 +18,9 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
 - **`daily`**: pending ticks in `~/Research/daily/*.md` (see below). **`daily --one`**:
   process only the single oldest pending tick (oldest digest file first), then stop — the
   nightly loop on Prometheus calls this repeatedly, one paper per session.
+- **`--one` modes skip blocked work**: Zotero items tagged `needs-kiyam` and tick lines marked
+  `— blocked:`. If the selected paper can't be finished unattended, mark it blocked per the
+  "Zotero conventions" section, commit, and stop — never leave it to be picked again.
 - **`--batch`**: don't stop to discuss takeaways. `inbox`, `backlog` and `daily` are always
   batch. In batch mode, process papers one at a time to completion and report at the end.
 
@@ -80,11 +83,15 @@ A single paper typically touches 5–15 pages. That's expected.
 Scan `~/Research/daily/*.md` for pending ticks per the "Daily digests" section. For each
 paper section with a pending tick:
 
-- **`ingest`** → run the per-paper steps above (batch) on the paper's arXiv id.
+- **`ingest`** → in step 1, put the resolved item in `Ingest` (create it there, or add an
+  existing item to it), then run the remaining per-paper steps (batch). Step 6 files it and
+  removes it from `Ingest` — so if the session dies after the commit, the item is still in
+  `Ingest` and the inbox loop finishes the filing.
 - **`to read`** → resolve and dedupe the Zotero item (step 1 only), add it to `To Read` and to
   the best-fitting topic collection; no wiki pages.
 - Then rewrite that line as `- [x] ingest — done YYYY-MM-DD` / `- [x] to read — done
-  YYYY-MM-DD` and include the digest file in that paper's commit.
+  YYYY-MM-DD` and commit the digest file per the "Git sync" section (with that paper's pages
+  for `ingest`; on its own as `ingest: to-read <id>` for `to read`), then push.
 
 ## Resuming
 

@@ -24,6 +24,8 @@ Read `~/Research/CLAUDE.md` first. Optional focus: $ARGUMENTS
    - Regular items in no top-level topic collection.
    - `To Read` items (including subcollections) with no topic collection.
    - Items still in `Ingest`, and items with no `wiki/sources/` page.
+   - Blocked work waiting for Kiyam: items tagged `needs-kiyam` (with their note) and digest
+     lines marked `— blocked:`. List each with its reason and a suggested resolution.
    - Items missing the arXiv URL / DOI / bibcode **only when the paper has one**: check ADS or
      Crossref; a paper genuinely without an arXiv id or bibcode (e.g. outside ADS) is fine.
    - Preprints that ADS now shows as published (DOI/journal missing on the item).
