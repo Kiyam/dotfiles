@@ -44,23 +44,44 @@ papers). The full-text cache is machine-local: `~/.cache/arxiv-digest/rag_corpus
 Kiyam's own papers: arXiv:2606.23346, 2404.15402, 2410.11883, 2506.04339, 2212.04521,
 2410.10616.
 
-Also read the topic hubs in `~/Research/wiki/topics/` — they show what Kiyam is actively
-working on and should nudge scores.
+Kiyam's active projects (the anchors for the top scores):
+- `kids_sbi` — SBI for KiDS-Legacy cosmic shear: GLASS forward sims with variable depth,
+  score/MOPED compression, NLE ensemble, TARP and misspecification tests.
+- `gc_sbi` — sequential NLE of (Ωm, σ8) from P(k) with disco-DJ: simulation acquisition,
+  Fisher pre-training, next multi-fidelity / transfer learning.
+- `spherical_inference` — field-level NUTS over a differentiable spherical weak-lensing
+  forward model (s2fft, JAX) on GPUs.
+
+Also read `~/Research/wiki/index.md` and the topic hubs in `~/Research/wiki/topics/` — they
+show what Kiyam is actively working on and should nudge scores.
 
 ## Steps
 
 0. **Sync**: pull per the "Git sync" section. Get today's date with `date +%F`. If
    `daily/digest_<today>.md` already exists, stop — today is done.
-1. **Load state**: `daily/my_papers_cache.md` for calibration; `daily/seen_papers.txt` as the
-   seen set (empty if missing).
+1. **Load state**: `daily/seen_papers.txt` as the seen set (empty if missing). For
+   calibration:
+   - `daily/my_papers_cache.md` (Kiyam's own papers);
+   - the `arxiv:` field of every `wiki/sources/*.md` — papers Kiyam chose to keep (positive
+     examples; also the already-ingested set);
+   - the tickboxes in the 20 most recent `daily/digest_*.md`: a paper with `ingest` or
+     `to read` ticked is a positive example; one left unticked in a digest older than 7 days
+     is a weak negative. Note the score each got, to see where past scores were off.
 2. **Scrape** the "New submissions" section only (not cross-lists or replacements) of
    `https://arxiv.org/list/astro-ph.CO/new`, `.../astro-ph.IM/new`, `.../stat.ML/new` and
    `.../stat.CO/new` — the latest mailing, one per weekday run. Dedupe; up to 100 ids,
    prioritising astro-ph.CO and astro-ph.IM. Count the ids found before capping.
 3. **Metadata**: `https://export.arxiv.org/api/query?id_list=<ids>&max_results=20`, in batches
    of 20 — id, title, first 4 authors, abstract, primary category, submission date.
-4. **Score**: drop ids in the seen set. Score the rest 0–10 against the interests, calibrated
-   by the papers cache. Be strict: ≥6 only if the paper directly relates to SBI, weak lensing,
+4. **Score**: drop ids in the seen set or already in `wiki/sources/`. Score the rest 0–10
+   against the interests, the projects and the step-1 examples, using these anchors:
+   - **9–10**: directly usable in `kids_sbi`, `gc_sbi` or `spherical_inference`;
+   - **7–8**: a method that transfers to one of them;
+   - **6**: same field, worth knowing;
+   - **<6**: drop.
+
+   The one-sentence reason names the project or topic hub it serves, or says "tangential".
+   Be strict: ≥6 only if the paper directly relates to SBI, weak lensing,
    normalizing flows, diffusion models, Bayesian model comparison, scattering transforms,
    wavelets, spherical CNNs, field-level inference, sequential or multi-fidelity SBI, data
    compression, posterior calibration (TARP/SBC), differentiable LSS simulators, KiDS
