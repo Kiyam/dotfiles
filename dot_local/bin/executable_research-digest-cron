@@ -17,42 +17,54 @@ run() {  # $1 = prompt
     case "$out" in *"hit your session limit"*|*"usage limit"*) echo "usage limit: will retry"; exit 1;; esac
     return $rc
 }
-pull() {  # pull; on any failure leave the repo clean and stop for Kiyam
+pull() {  # commit leftovers of a killed session, pull; on failure leave the repo clean and stop
+    if [ -n "$(git status --porcelain wiki daily)" ]; then
+        git add -A wiki daily && git commit -qm "wip: interrupted session (lint will tidy)"
+    fi
     git pull -q --rebase --autostash && return 0
     git rebase --abort 2>/dev/null
     echo "git pull failed (conflict?) — resolve in ~/Research on Prometheus, then: systemctl --user start research-digest"
     exit 2
 }
-pending() { grep -hE '^- \[x\] (ingest|to read)[[:space:]]*$' daily/*.md 2>/dev/null | wc -l; }
-inbox() {  # Ingest items not blocked; secrets stay inside this subshell
-    ( . "$HOME/.config/research/secrets.env"
-      curl -s -D - -o /dev/null -H "Zotero-API-Key: $ZOTERO_API_KEY" \
-        "https://api.zotero.org/users/$ZOTERO_LIBRARY_ID/collections/ZVZ3TU8S/items/top?limit=1&format=keys&tag=-needs-kiyam" ) |
-        tr -d '\r' | awk -F': ' 'tolower($1)=="total-results" {print $2; f=1} END {if (!f) print 0}'
+next_tick() { grep -nE '^- \[x\] (ingest|to read)[[:space:]]*$' daily/*.md 2>/dev/null | head -1; }
+zotero_ingest() {  # prints "<count> <oldest key>" for unblocked Ingest items; "-1" if Zotero can't be reached
+    resp=$( . "$HOME/.config/research/secrets.env"
+            printf 'header = "Zotero-API-Key: %s"\n' "$ZOTERO_API_KEY" |  # key via stdin, not argv
+            curl -s -i -K - "https://api.zotero.org/users/$ZOTERO_LIBRARY_ID/collections/ZVZ3TU8S/items/top?limit=1&format=keys&sort=dateAdded&direction=asc&tag=-needs-kiyam" ) ||
+        { echo -1; return; }
+    printf '%s\n' "$resp" | tr -d '\r' | awk '
+        NR==1 {code=$2} /^$/ {body=1; next}
+        tolower($1)=="total-results:" {n=$2}
+        body && NF && !k {k=$1}
+        END {if (code==401 || code==403) print "rejected"; else if (code!=200) print -1; else print (n?n:0), k}'
 }
 
 pull
 run "/research-digest" || exit 1
 
-i=0; prev=-1
+i=0; last=""
 while [ "$i" -lt "$MAX_TICKS" ]; do
     pull
-    n=$(pending)
-    [ "$n" -eq 0 ] && { echo "no pending ticks"; break; }
-    [ "$n" -eq "$prev" ] && { echo "a tick was not marked done or blocked; stopping to avoid a loop"; break; }
-    prev=$n
-    echo "--- tick $((i+1)): $n pending"
+    t=$(next_tick)
+    [ -z "$t" ] && { echo "no pending ticks"; break; }
+    [ "$t" = "$last" ] && { echo "tick not marked done or blocked: $t — stopping to avoid a loop"; break; }
+    last=$t
+    echo "--- tick $((i+1)): $t"
     run "/research-ingest daily --one"
     i=$((i+1))
 done
 
-prev=-1
+last=""
 while [ "$i" -lt "$MAX_TICKS" ]; do
-    n=$(inbox)
-    [ "$n" -eq 0 ] && { echo "Ingest inbox empty"; break; }
-    [ "$n" -eq "$prev" ] && { echo "an Ingest item was not filed or blocked; stopping to avoid a loop"; break; }
-    prev=$n
-    echo "--- inbox $((i+1)): $n in Ingest"
+    set -- $(zotero_ingest)
+    case "$1" in
+        rejected) echo "Zotero rejected the API key — check ~/.config/research/secrets.env"; exit 2;;
+        -1) echo "Zotero unreachable — skipping the Ingest inbox tonight"; break;;
+        0) echo "Ingest inbox empty"; break;;
+    esac
+    [ "$2" = "$last" ] && { echo "Ingest item $2 not filed or blocked — stopping to avoid a loop"; break; }
+    last=$2
+    echo "--- inbox $((i+1)): $1 in Ingest, oldest $2"
     run "/research-ingest inbox --one"
     i=$((i+1))
 done

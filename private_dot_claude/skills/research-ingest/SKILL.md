@@ -53,7 +53,8 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
    under, and any tension with existing wiki pages; wait for a reply before writing.
 4. **Write pages.** Check `wiki/index.md` first.
    - **Topic(s)**: reuse an existing hub when it fits. A new topic means a new hub page *and*
-     a new top-level Zotero collection with the same name; record its key in
+     a new top-level Zotero collection with the same name — first search the collections
+     (`zotero_search_collections`) and reuse an exact-name match instead of creating a twin; record its key in
      `zotero_collection`. In batch mode, prefer existing topics; propose new ones in the final
      report rather than creating them, unless nothing fits at all.
    - **Source page** `wiki/sources/<slug>.md` per the "Source page template" section. If a
