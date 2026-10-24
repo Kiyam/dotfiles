@@ -2,10 +2,10 @@
 Description=Nightly arXiv digest + ticked-paper ingest into ~/Research (pushes to Forgejo)
 Wants=network-online.target
 After=network-online.target
-# Retry after a usage limit (exit 1): every 75 min, at most 5 starts a day — spans a 5 h limit
-# window, and a 6 h timeout can't loop because the window is a full day.
+# Retry after a usage limit (exit 1) every 75 min until the run finishes; 20 > 24h/75min, so the
+# start limit never blocks a retry (weekend runs keep going across limit resets).
 StartLimitIntervalSec=24h
-StartLimitBurst=5
+StartLimitBurst=20
 
 [Service]
 Type=oneshot

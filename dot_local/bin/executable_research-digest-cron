@@ -7,7 +7,8 @@ export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
 export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/research_deploy -o IdentitiesOnly=yes -o BatchMode=yes"
 cd "$HOME/Research" || exit 2
 TOOLS="Bash,Read,Write,Edit,Glob,Grep,WebFetch,mcp__zotero,mcp__mcp-ads-arxiv"
-MAX_TICKS=40                         # ponytail: fixed nightly cap (ticks + inbox together)
+MAX_TICKS=40                         # ponytail: fixed weekday cap (ticks + inbox together)
+[ "$(date -u +%u)" -ge 6 ] && MAX_TICKS=100000  # weekends: drain the backlog, retrying after each usage limit
 SESSION_TIMEOUT=${SESSION_TIMEOUT:-45m}  # one hung session must not eat the night
 
 run() {  # $1 = prompt
