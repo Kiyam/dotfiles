@@ -40,7 +40,7 @@ zotero_ingest() {  # prints "<count> <oldest key>" for unblocked Ingest items; "
 }
 
 pull
-run "/research-digest" || exit 1
+[ "$(date -u +%u)" -le 5 ] && { run "/research-digest" || exit 1; }  # arXiv mails Mon–Fri only; weekends just ingest
 
 i=0; last=""
 while [ "$i" -lt "$MAX_TICKS" ]; do
