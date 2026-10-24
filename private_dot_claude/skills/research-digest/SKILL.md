@@ -71,6 +71,10 @@ show what Kiyam is actively working on and should nudge scores.
      lines and tickboxes): a paper with `ingest` or `to read` ticked is a positive example;
      one left unticked in a digest older than 30 days is a weak negative. Note the score each
      got, to see where past scores were off.
+
+   Also collect **blocked work** waiting for Kiyam: Zotero items tagged `needs-kiyam`
+   (`zotero_search_by_tag`; the reason is in the item's note) and digest lines marked
+   `— blocked:`. Read only — never untag or edit them.
 2. **Scrape** the "New submissions" section only (not cross-lists or replacements) of
    `https://arxiv.org/list/astro-ph.CO/new`, `.../astro-ph.IM/new`, `.../stat.ML/new` and
    `.../stat.CO/new` — the latest mailing, one per weekday run. Dedupe; up to 100 ids,
@@ -104,6 +108,8 @@ show what Kiyam is actively working on and should nudge scores.
    **Sources:** `astro-ph.CO`, `astro-ph.IM`, `stat.ML`, `stat.CO`
    **Papers scraped:** N (cap reached: F found)
    **Papers selected:** M (relevance ≥ 6/10)
+   **Needs you:** K blocked — fix and untag, or run `/research-lint` for suggestions
+   - Title — reason (Zotero `KEY` · or `digest_YYYY-MM-DD.md`)
 
    ---
 
@@ -137,11 +143,11 @@ show what Kiyam is actively working on and should nudge scores.
    ```
 
    Keep the "(cap reached: F found)" note only when more than 100 ids were found; otherwise
-   write just `N`. Every paper section ends with exactly those two tickboxes. If nothing scored ≥6, write a
+   write just `N`. Omit the "Needs you" block when nothing is blocked. Every paper section ends with exactly those two tickboxes. If nothing scored ≥6, write a
    short digest saying so (no tickboxes).
 8. **Seen set**: append every included id to `daily/seen_papers.txt`.
 9. **Commit and push** per the "Git sync" section (`digest: YYYY-MM-DD`), including the digest
    and `seen_papers.txt`. On a push rejection, `pull --rebase` once and push again.
 
-Never write to Zotero here — Kiyam ticks boxes in Obsidian and runs
+Never write to Zotero here (reading tags and notes is fine) — Kiyam ticks boxes in Obsidian and runs
 `/research-ingest daily`. Never download PDFs. Be concise.

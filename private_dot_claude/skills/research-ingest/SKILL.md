@@ -1,7 +1,7 @@
 ---
 name: research-ingest
 description: Ingest papers into Kiyam's research wiki (~/Research) and file them in Zotero. Invoked only as /research-ingest.
-argument-hint: "<zotero-key | arxiv-id | DOI | pdf-path | inbox | backlog | daily> [--batch]"
+argument-hint: "<zotero-key | arxiv-id | DOI | pdf-path | url | inbox | backlog | daily> [--batch]"
 disable-model-invocation: true
 model: sonnet
 ---
@@ -11,6 +11,9 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
 ## Arguments
 
 - **Zotero item key** (8 chars), **arXiv id**, **DOI**, or **path to a PDF**: one paper.
+- **URL** of a blog post, web page or slide deck (not arXiv/doi.org): one web or slides source,
+  per the "Web pages and slide decks" section. Zotero items of type `blogPost`, `webpage` or
+  `presentation` (e.g. saved with the browser connector into `Ingest`) take the same path.
 - **`inbox`**: every item in the Zotero `Ingest` collection. **`inbox --one`**: only the single
   oldest item in `Ingest` (by date added), then stop — used by the nightly loop.
 - **`backlog`**: every PDF under `~/Documents/Papers/` (recursive), plus every regular item in
@@ -34,6 +37,9 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
 
 1. **Resolve the Zotero item.**
    - Zotero key → fetch it.
+   - Web page / slides (URL, or item type `blogPost` / `webpage` / `presentation`) → follow the
+     "Web pages and slide decks" section for the item, dedupe and full text; skip the arXiv/
+     ADS enrichment below.
    - arXiv id / DOI / PDF → identify per the "Identifying a paper" section, then dedupe per
      the "Zotero conventions" section. Existing item → use it. None → create it with
      `zotero_add_item` (correct type, authors, title, date, abstract, URL, DOI,
@@ -44,7 +50,7 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
      `arXiv: <id>` / `ADS Bibcode: <bibcode>` — whichever exist. Use ADS to check whether an
      arXiv preprint has since been published; if so set the DOI, journal and type
      `journalArticle`.
-2. **Read it** per the "Identifying a paper" section's full-text order: `.tex` first, then PDF,
+2. **Read it** per the "Identifying a paper" section's full-text order (web pages and slides: the "Web pages and slide decks" order instead): `.tex` first, then PDF,
    then OCR. Read section by section and look only at the key data figures (at most 4), as
    that section says. Also read the item's Zotero notes and PDF annotations
    (`zotero_get_notes`, `zotero_get_annotations`) — they are Kiyam's own reading notes and
