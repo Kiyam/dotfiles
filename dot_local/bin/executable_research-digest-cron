@@ -15,7 +15,10 @@ run() {  # $1 = prompt
     out=$(printf '%s\n' "$1" | timeout "$SESSION_TIMEOUT" claude -p --allowedTools "$TOOLS" 2>&1); rc=$?
     printf '%s\n' "$out"
     [ "$rc" -eq 124 ] && echo "session timed out after $SESSION_TIMEOUT"
-    case "$out" in *"hit your session limit"*|*"usage limit"*) echo "usage limit: will retry"; exit 1;; esac
+    case "$out" in *"hit your session limit"*|*"usage limit"*)
+        # Weekdays: stop retrying after 09:00 UTC (~5 retries from 03:30), leaving the day's limit to Kiyam
+        [ "$(date -u +%u)" -le 5 ] && [ "$(date -u +%H)" -ge 9 ] && { echo "usage limit: weekday daytime, no retry"; exit 0; }
+        echo "usage limit: will retry"; exit 1;; esac
     return $rc
 }
 pull() {  # commit leftovers of a killed session, pull; on failure leave the repo clean and stop
