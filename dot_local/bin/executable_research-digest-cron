@@ -69,7 +69,7 @@ while [ "$i" -lt "$MAX_TICKS" ]; do
     [ "$2" = "$last" ] && { echo "Ingest item $2 not filed or blocked — stopping to avoid a loop"; break; }
     last=$2
     echo "--- inbox $((i+1)): $1 in Ingest, oldest $2"
-    run "/research-ingest inbox --one"
+    run "/research-ingest inbox --one $2"  # same item the loop guard tracks
     i=$((i+1))
 done
 

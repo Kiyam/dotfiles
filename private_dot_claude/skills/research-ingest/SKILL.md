@@ -15,7 +15,8 @@ Read `~/Research/CLAUDE.md` first. Ingest: $ARGUMENTS
   per the "Web pages and slide decks" section. Zotero items of type `blogPost`, `webpage` or
   `presentation` (e.g. saved with the browser connector into `Ingest`) take the same path.
 - **`inbox`**: every item in the Zotero `Ingest` collection. **`inbox --one`**: only the single
-  oldest item in `Ingest` (by date added), then stop — used by the nightly loop.
+  oldest item in `Ingest` (by date added), then stop — used by the nightly loop. **`inbox --one <key>`**:
+  that `Ingest` item instead of the oldest (the nightly loop passes the key it tracks).
 - **`backlog`**: every PDF under `~/Documents/Papers/` (recursive), plus every regular item in
   Zotero that has no `wiki/sources/` page yet (match on `zotero_key` in source frontmatter).
 - **`daily`**: pending ticks in `~/Research/daily/*.md` (see below). **`daily --one`**:
