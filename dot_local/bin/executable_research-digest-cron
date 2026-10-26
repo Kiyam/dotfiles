@@ -1,19 +1,28 @@
 #!/bin/sh
-# Nightly on Prometheus (systemd user timer): write today's arXiv digest, then process ticked
-# papers and the Zotero Ingest inbox, one per Claude session. Pushes use the repo-only deploy key.
+# Nightly on Prometheus (systemd user timer, 23:00 and 04:00 Paris): process ticked papers and the
+# Zotero Ingest inbox, one per Claude session, and write the day's arXiv digest once listings are out
+# (after 03:00 Paris). Starting at 23:00 gives two 5-hour usage windows before the 09:00 cutoff.
+# Pushes use the repo-only deploy key.
 # Exit 1 = usage limit (systemd retries later); exit 2 = needs Kiyam (git conflict or unpushed
 # work; systemd does not retry). Logs: journalctl --user -u research-digest
+export TZ=Europe/Paris                # all clock checks (and the digest's date) in Kiyam's time
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
 export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/research_deploy -o IdentitiesOnly=yes -o BatchMode=yes"
 cd "$HOME/Research" || exit 2
 TOOLS="Bash,Read,Write,Edit,Glob,Grep,WebFetch,mcp__zotero,mcp__mcp-ads-arxiv"
 MAX_TICKS=40                         # ponytail: fixed weekday cap (ticks + inbox together)
-[ "$(date -u +%u)" -ge 6 ] && MAX_TICKS=100000  # weekends: drain the backlog, retrying after each usage limit
+[ "$(date +%u)" -ge 6 ] && MAX_TICKS=100000  # weekends: drain the backlog, retrying after each usage limit
 SESSION_TIMEOUT=${SESSION_TIMEOUT:-45m}  # one hung session must not eat the night
 
-# Weekdays after 09:00 UTC the day's usage belongs to Kiyam: no new sessions, no retries.
-# Leftovers carry to the next night. DAYTIME_OK=1 overrides for a manual run.
-daytime() { [ -z "$DAYTIME_OK" ] && [ "$(date -u +%u)" -le 5 ] && [ "$(date -u +%H)" -ge 9 ]; }
+# Weekdays 09:00–23:00 Paris the day's usage belongs to Kiyam: no new sessions, no retries; a
+# session already running finishes (≤ SESSION_TIMEOUT). Leftovers carry to the next night.
+# DAYTIME_OK=1 overrides for a manual run.
+daytime() { [ -z "$DAYTIME_OK" ] && [ "$(date +%u)" -le 5 ] && [ "$(date +%H)" -ge 9 ] && [ "$(date +%H)" -lt 23 ]; }
+# arXiv mails Mon–Fri, posted ~02:00 Paris; write the digest once per day after 03:00
+digest() {
+    [ "$(date +%u)" -le 5 ] && [ "$(date +%H)" -ge 3 ] && [ "$(date +%H)" -lt 23 ] && [ ! -e "daily/digest_$(date +%F).md" ] || return 0
+    run "/research-digest" || exit 1
+}
 
 run() {  # $1 = prompt
     out=$(printf '%s\n' "$1" | timeout "$SESSION_TIMEOUT" claude -p --allowedTools "$TOOLS" 2>&1); rc=$?
@@ -46,14 +55,14 @@ zotero_ingest() {  # prints "<count> <oldest key>" for unblocked Ingest items; "
         END {if (code==401 || code==403) print "rejected"; else if (code!=200) print -1; else print (n?n:0), k}'
 }
 
-daytime && { echo "weekday after 09:00 UTC: not starting (DAYTIME_OK=1 to override)"; exit 0; }
+daytime && { echo "weekday daytime (09:00–23:00 Paris): not starting (DAYTIME_OK=1 to override)"; exit 0; }
 pull
-[ "$(date -u +%u)" -le 5 ] && { run "/research-digest" || exit 1; }  # arXiv mails Mon–Fri only; weekends just ingest
+digest
 
 i=0; last=""
 while [ "$i" -lt "$MAX_TICKS" ]; do
-    daytime && { echo "09:00 UTC reached: stopping, the rest carries to tonight"; break; }
-    pull
+    daytime && { echo "09:00 Paris reached: stopping, the rest carries to tonight"; break; }
+    pull; digest
     t=$(next_tick)
     [ -z "$t" ] && { echo "no pending ticks"; break; }
     [ "$t" = "$last" ] && { echo "tick not marked done or blocked: $t — stopping to avoid a loop"; break; }
@@ -65,7 +74,8 @@ done
 
 last=""
 while [ "$i" -lt "$MAX_TICKS" ]; do
-    daytime && { echo "09:00 UTC reached: stopping, the rest carries to tonight"; break; }
+    daytime && { echo "09:00 Paris reached: stopping, the rest carries to tonight"; break; }
+    digest
     set -- $(zotero_ingest)
     case "$1" in
         rejected) echo "Zotero rejected the API key — check ~/.config/research/secrets.env"; exit 2;;

@@ -2,16 +2,17 @@
 Description=Nightly arXiv digest + ticked-paper ingest into ~/Research (pushes to Forgejo)
 Wants=network-online.target
 After=network-online.target
-# Retry after a usage limit (exit 1) every 75 min; 20 > 24h/75min, so the start limit never blocks
-# a retry. Weekends keep going across limit resets; on weekdays the script stops retrying at 09:00 UTC.
+# Retry after a usage limit (exit 1) every 20 min, so a 5-hour window that resets mid-night is
+# picked up quickly; 100 > 24h/20min, so the start limit never blocks a retry. Weekends keep going
+# across limit resets; on weekdays the script stops at 09:00 Paris.
 StartLimitIntervalSec=24h
-StartLimitBurst=20
+StartLimitBurst=100
 
 [Service]
 Type=oneshot
 ExecStart=%h/.local/bin/research-digest-cron
 TimeoutStartSec=6h
 Restart=on-failure
-RestartSec=75min
+RestartSec=20min
 # Exit 2 = needs Kiyam (git conflict / unpushed work): fail visibly, don't retry.
 RestartPreventExitStatus=2
