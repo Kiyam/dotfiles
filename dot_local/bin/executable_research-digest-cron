@@ -11,13 +11,16 @@ MAX_TICKS=40                         # ponytail: fixed weekday cap (ticks + inbo
 [ "$(date -u +%u)" -ge 6 ] && MAX_TICKS=100000  # weekends: drain the backlog, retrying after each usage limit
 SESSION_TIMEOUT=${SESSION_TIMEOUT:-45m}  # one hung session must not eat the night
 
+# Weekdays after 09:00 UTC the day's usage belongs to Kiyam: no new sessions, no retries.
+# Leftovers carry to the next night. DAYTIME_OK=1 overrides for a manual run.
+daytime() { [ -z "$DAYTIME_OK" ] && [ "$(date -u +%u)" -le 5 ] && [ "$(date -u +%H)" -ge 9 ]; }
+
 run() {  # $1 = prompt
     out=$(printf '%s\n' "$1" | timeout "$SESSION_TIMEOUT" claude -p --allowedTools "$TOOLS" 2>&1); rc=$?
     printf '%s\n' "$out"
     [ "$rc" -eq 124 ] && echo "session timed out after $SESSION_TIMEOUT"
     case "$out" in *"hit your session limit"*|*"usage limit"*)
-        # Weekdays: stop retrying after 09:00 UTC (~5 retries from 03:30), leaving the day's limit to Kiyam
-        [ "$(date -u +%u)" -le 5 ] && [ "$(date -u +%H)" -ge 9 ] && { echo "usage limit: weekday daytime, no retry"; exit 0; }
+        daytime && { echo "usage limit: weekday daytime, no retry"; exit 0; }
         echo "usage limit: will retry"; exit 1;; esac
     return $rc
 }
@@ -27,7 +30,7 @@ pull() {  # commit leftovers of a killed session, pull; on failure leave the rep
     fi
     git pull -q --rebase --autostash && return 0
     git rebase --abort 2>/dev/null
-    echo "git pull failed (conflict?) — resolve in ~/Research on Prometheus, then: systemctl --user start research-digest"
+    echo "git pull failed (conflict?) — resolve in ~/Research on Prometheus, then: systemctl --user start research-digest (weekday daytime: DAYTIME_OK=1 research-digest-cron)"
     exit 2
 }
 next_tick() { grep -nE '^- \[x\] (ingest|to read)[[:space:]]*$' daily/*.md 2>/dev/null | head -1; }
@@ -43,11 +46,13 @@ zotero_ingest() {  # prints "<count> <oldest key>" for unblocked Ingest items; "
         END {if (code==401 || code==403) print "rejected"; else if (code!=200) print -1; else print (n?n:0), k}'
 }
 
+daytime && { echo "weekday after 09:00 UTC: not starting (DAYTIME_OK=1 to override)"; exit 0; }
 pull
 [ "$(date -u +%u)" -le 5 ] && { run "/research-digest" || exit 1; }  # arXiv mails Mon–Fri only; weekends just ingest
 
 i=0; last=""
 while [ "$i" -lt "$MAX_TICKS" ]; do
+    daytime && { echo "09:00 UTC reached: stopping, the rest carries to tonight"; break; }
     pull
     t=$(next_tick)
     [ -z "$t" ] && { echo "no pending ticks"; break; }
@@ -60,6 +65,7 @@ done
 
 last=""
 while [ "$i" -lt "$MAX_TICKS" ]; do
+    daytime && { echo "09:00 UTC reached: stopping, the rest carries to tonight"; break; }
     set -- $(zotero_ingest)
     case "$1" in
         rejected) echo "Zotero rejected the API key — check ~/.config/research/secrets.env"; exit 2;;
