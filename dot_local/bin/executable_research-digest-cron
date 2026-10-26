@@ -18,7 +18,8 @@ SESSION_TIMEOUT=${SESSION_TIMEOUT:-45m}  # one hung session must not eat the nig
 # session already running finishes (≤ SESSION_TIMEOUT). Leftovers carry to the next night.
 # DAYTIME_OK=1 overrides for a manual run.
 daytime() { [ -z "$DAYTIME_OK" ] && [ "$(date +%u)" -le 5 ] && [ "$(date +%H)" -ge 9 ] && [ "$(date +%H)" -lt 23 ]; }
-# arXiv mails Mon–Fri, posted ~02:00 Paris; write the digest once per day after 03:00
+# arXiv mails Mon–Fri, posted ~02:00 Paris; write the digest once per day after 03:00. The skill
+# also backfills weekdays missed in the last 5 (oldest first, today last), so "today exists" = done.
 digest() {
     [ "$(date +%u)" -le 5 ] && [ "$(date +%H)" -ge 3 ] && [ "$(date +%H)" -lt 23 ] && [ ! -e "daily/digest_$(date +%F).md" ] || return 0
     run "/research-digest" || exit 1

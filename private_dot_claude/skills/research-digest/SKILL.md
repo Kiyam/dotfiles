@@ -60,8 +60,14 @@ show what Kiyam is actively working on and should nudge scores.
 
 ## Steps
 
-0. **Sync**: pull per the "Git sync" section. Get today's date with `date +%F`. If
-   `daily/digest_<today>.md` already exists, stop — today is done.
+0. **Sync**: pull per the "Git sync" section. Get today's date with `date +%F` (Paris time —
+   the timer sets `TZ`). **Target days** = today plus any weekday missed since the newest
+   `daily/digest_*.md`, looking back at most 5 weekdays (what arXiv's `pastweek` listing
+   still holds); drop days whose `daily/digest_<day>.md` exists. None left → stop, today is
+   done. Process the targets **oldest first**, running steps 1–9 once per day and committing
+   each before starting the next, so a timeout keeps the finished days and today comes last.
+   A gap older than the 5-weekday window can't be recovered: name it on a `**Missed:**` line
+   in today's digest.
 1. **Load state**: `daily/seen_papers.txt` as the seen set (empty if missing). For
    calibration:
    - `daily/my_papers_cache.md` (Kiyam's own papers);
@@ -79,6 +85,13 @@ show what Kiyam is actively working on and should nudge scores.
    `https://arxiv.org/list/astro-ph.CO/new`, `.../astro-ph.IM/new`, `.../stat.ML/new` and
    `.../stat.CO/new` — the latest mailing, one per weekday run. Dedupe; up to 100 ids,
    prioritising astro-ph.CO and astro-ph.IM. Count the ids found before capping.
+   **Earlier target day D** (catch-up): `/new` no longer has it. Use
+   `https://arxiv.org/list/<cat>/pastweek?show=2000` for the same four categories and take the
+   entries under D's heading (e.g. `<h3>Tue, 27 Oct 2026`), dropping those marked
+   `(cross-list from …)` — what's left is exactly D's "New submissions". No heading for D
+   (arXiv holiday) → write `daily/digest_<D>.md` saying `No arXiv mailing on D.` (no
+   tickboxes) so the day isn't retried, and move on. The digest for D uses D in its file
+   name and title.
 3. **Metadata**: `https://export.arxiv.org/api/query?id_list=<ids>&max_results=20`, in batches
    of 20 — id, title, first 4 authors, abstract, primary category, submission date.
 4. **Score**: drop ids in the seen set or already in `wiki/sources/`. Score the rest 0–10
