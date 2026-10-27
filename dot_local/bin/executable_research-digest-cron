@@ -1,5 +1,5 @@
 #!/bin/sh
-# Nightly on Prometheus (systemd user timer, 23:00 and 04:00 Paris): process ticked papers and the
+# Nightly on Prometheus (systemd user timer, 23:00, 04:00 and 07:00 Paris): process ticked papers and the
 # Zotero Ingest inbox, one per Claude session, and write the day's arXiv digest once listings are out
 # (after 03:00 Paris). Starting at 23:00 gives two 5-hour usage windows before the 09:00 cutoff.
 # Pushes use the repo-only deploy key.

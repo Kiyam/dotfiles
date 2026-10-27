@@ -1,9 +1,10 @@
 [Unit]
-Description=Nightly ingest from 23:00 Paris (two 5-hour usage windows before 09:00), arXiv digest after 03:00 on weekdays
+Description=Nightly ingest from 23:00 Paris (two 5-hour usage windows before 09:00), arXiv digest after 03:00 on weekdays (07:00 retry if arXiv is late)
 
 [Timer]
 OnCalendar=*-*-* 23:00:00 Europe/Paris
 OnCalendar=*-*-* 04:00:00 Europe/Paris
+OnCalendar=*-*-* 07:00:00 Europe/Paris
 Persistent=true
 RandomizedDelaySec=5min
 
