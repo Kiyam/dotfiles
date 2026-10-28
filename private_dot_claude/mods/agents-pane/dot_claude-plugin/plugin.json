@@ -1,0 +1,1 @@
+{ "name": "agents-pane", "version": "0.1.0", "description": "Pane showing what subagents and shells are doing", "types": "./types/index.d.ts" }
