@@ -12,6 +12,9 @@ export type Row = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'agents-pane': { rows: Shaped<Row[]> }
+    'agents-pane': {
+      rows: Shaped<Row[]>
+      offsets: Shaped<{ agent: number; shell: number }>
+    }
   }
 }

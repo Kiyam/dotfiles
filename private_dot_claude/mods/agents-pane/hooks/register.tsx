@@ -7,6 +7,12 @@ const PANE = 'agents-pane'
 const rows = atom({ plugin: 'agents-pane', key: 'rows' } as const, [], {
   shape: 'rows-1',
 })
+// How far each section is scrolled, in entries from the newest.
+const offsets = atom({ plugin: 'agents-pane', key: 'offsets' } as const, { agent: 0, shell: 0 }, {
+  shape: 'offsets-1',
+})
+// Entries each section shows at once; the rest scroll.
+const SHOWN = 6
 
 // One short line for what a tool call is doing: the tool and its main argument.
 const summarize = (e: Record<string, unknown>): string => {
@@ -58,7 +64,7 @@ export const register: Register = on => {
         tools: 0,
         startedAt: await $.clock.now(),
       }
-      await update($, rows, list => [...list, row].slice(-100))
+      await update($, rows, list => [...list, row].slice(-300))
     }
 
     return started
@@ -92,7 +98,7 @@ export const register: Register = on => {
       tools: 0,
       startedAt: await $.clock.now(),
     }
-    await update($, rows, list => [...list, row].slice(-100))
+    await update($, rows, list => [...list, row].slice(-300))
     const ran = await next(e)
     const now = await $.clock.now()
     // ponytail: background shells stay "background" — no event marks their exit; poll TaskOutput if that matters.
@@ -109,15 +115,40 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const { Box, Text } = $.ui.resolve(e)
+    const { Button } = $.ui.resolve(e)
     const list = await read($, rows)
+    const scrolled = await read($, offsets)
     const now = await $.clock.now()
-    const room = Math.max(2, (e.viewport?.rows ?? 24) - 6)
-    const draw = (kind: Row['kind']) =>
-      list
-        .filter(row => row.kind === kind)
-        .slice(-Math.floor(room / 2))
-        .reverse()
-        .map(row => (
+    const section = (kind: Row['kind'], title: string, up: string, down: string) => {
+      const all = list.filter(row => row.kind === kind).reverse()
+      const last = Math.max(0, all.length - SHOWN)
+      const from = Math.min(scrolled[kind], last)
+      const move = (by: number) =>
+        update($, offsets, o => ({ ...o, [kind]: Math.max(0, Math.min(last, o[kind] + by)) }))
+
+      return (
+        <Box flexDirection="column">
+          <Box flexDirection="row" gap={1}>
+            <Text bold>{title}</Text>
+            {all.length > SHOWN && (
+              <Text dimColor>
+                {from + 1}–{Math.min(from + SHOWN, all.length)} of {all.length}
+              </Text>
+            )}
+            {all.length > SHOWN && (
+              <Button key={`${kind}-up`} label="▲" hotkey={up} plain dimColor={from === 0} onPress={() => move(-SHOWN)} />
+            )}
+            {all.length > SHOWN && (
+              <Button key={`${kind}-down`} label="▼" hotkey={down} plain dimColor={from === last} onPress={() => move(SHOWN)} />
+            )}
+          </Box>
+          {all.length === 0 && <Text dimColor>none yet</Text>}
+          {draw(all.slice(from, from + SHOWN))}
+        </Box>
+      )
+    }
+    const draw = (shown: Row[]) =>
+      shown.map(row => (
           <Box flexDirection="column">
             <Text wrap="truncate-end" dimColor={row.status === 'done'}>
               <Text color={COLOR[row.status]}>{row.status.padEnd(10)}</Text>
@@ -134,12 +165,9 @@ export const register: Register = on => {
         ))
 
     return (
-      <Box flexDirection="column">
-        <Text bold>Agents</Text>
-        {list.some(row => row.kind === 'agent') ? draw('agent') : <Text dimColor>none yet</Text>}
-        <Text> </Text>
-        <Text bold>Shells</Text>
-        {list.some(row => row.kind === 'shell') ? draw('shell') : <Text dimColor>none yet</Text>}
+      <Box flexDirection="column" gap={1}>
+        {section('agent', 'Agents', '1', '2')}
+        {section('shell', 'Shells', '3', '4')}
       </Box>
     )
   })

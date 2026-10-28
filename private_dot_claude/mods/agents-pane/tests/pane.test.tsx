@@ -44,3 +44,27 @@ test('agents and shells show with their state', async ($, on) => {
   expect((await ui.find({ type: 'Text', text: /find bugs/ }))?.text).toMatch(/^done/)
   await ui.unmount()
 })
+
+test('each section shows six at a time and scrolls on its own', async ($, on) => {
+  on('command.register', () => ({ value: { command: 'agents-pane' } }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('tool.call', () => ({ result: {} }))
+  on('clock.now', () => ({ value: 1000 }))
+
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  for (let i = 1; i <= 8; i++) await $.tool.call({ tool: 'Bash', command: `echo ${i}`, description: `step ${i}` })
+
+  let ui = await $.ui.mount(PANE)
+  expect((await ui.find({ type: 'Text', text: /of 8/ }))?.text).toBe('1–6 of 8')
+  expect(await ui.find({ type: 'Text', text: /step 8/ })).toBeTruthy()
+  expect(await ui.find({ type: 'Text', text: /step 2/ })).toBeFalsy()
+  await ui.press({ key: 'shell-down' })
+  await ui.unmount()
+
+  ui = await $.ui.mount(PANE)
+  expect((await ui.find({ type: 'Text', text: /of 8/ }))?.text).toBe('3–8 of 8')
+  expect(await ui.find({ type: 'Text', text: /step 1\b/ })).toBeTruthy()
+  expect(await ui.find({ type: 'Text', text: /step 8/ })).toBeFalsy()
+  await ui.unmount()
+})
