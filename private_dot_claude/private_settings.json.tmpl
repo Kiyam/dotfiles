@@ -35,7 +35,8 @@
     "design@synced": false,
     "productivity@synced": false,
     "cowork-plugin-management@synced": false,
-    "pdf-viewer@synced": false
+    "pdf-viewer@synced": false{{- if eq .chezmoi.os "darwin" }},
+    "swift-lsp@claude-plugins-official": true{{- end }}
   },
   "extraKnownMarketplaces": {
     "caveman": {
