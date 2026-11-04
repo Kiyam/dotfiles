@@ -30,3 +30,7 @@ Appdata # only manage on windows
 .config/systemd/user/research-digest.service
 .config/systemd/user/research-digest.timer
 {{- end }}
+
+# repo docs, not deployed
+README.md
+Brewfile
