@@ -40,7 +40,7 @@ export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'agents-pane',
-      description: 'Show what subagents and shells are doing in a pane',
+      description: 'Toggle the pane showing what subagents and shells are doing',
     })
     void $.ui.open({ id: PANE, title: 'Agents & shells' })
 
@@ -48,6 +48,10 @@ export const register: Register = on => {
   })
 
   on('command.run', { command: 'agents-pane' }, async $ => {
+    if ((await $.ui.panes()).some(pane => pane.id === PANE)) {
+      await $.ui.close({ id: PANE })
+      return { text: 'Agents pane closed.' }
+    }
     await $.ui.open({ id: PANE, title: 'Agents & shells' })
 
     return { text: 'Agents pane opened.' }
