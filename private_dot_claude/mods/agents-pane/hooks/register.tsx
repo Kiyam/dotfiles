@@ -42,7 +42,6 @@ export const register: Register = on => {
       name: 'agents-pane',
       description: 'Toggle the pane showing what subagents and shells are doing',
     })
-    void $.ui.open({ id: PANE, title: 'Agents & shells' })
 
     return next(e)
   })
