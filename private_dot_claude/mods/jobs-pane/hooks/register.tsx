@@ -119,12 +119,12 @@ export const register: Register = on => {
           <Text dimColor>updated {ago < 60 ? `${ago}s` : `${Math.floor(ago / 60)}m`} ago</Text>
           <Button key="refresh" label="refresh" hotkey="r" plain onPress={() => refresh($)} />
         </Box>
-        {snap.hosts.map(h => (
+        {snap.hosts.map(host => (
           <Box flexDirection="column">
-            <Text bold>{h.host}</Text>
-            {h.error && <Text color="red" wrap="truncate-end">{h.error}</Text>}
-            {!h.error && h.jobs.length === 0 && <Text dimColor>no jobs</Text>}
-            {group(h.jobs).map(({ job, count }) => (
+            <Text bold>{host.host}</Text>
+            {host.error && <Text color="red" wrap="truncate-end">{host.error}</Text>}
+            {!host.error && host.jobs.length === 0 && <Text dimColor>no jobs</Text>}
+            {group(host.jobs).map(({ job, count }) => (
               <Text wrap="truncate-end">
                 <Text color={COLOR[job.state] ?? 'red'}>{job.state.slice(0, 7).padEnd(8)}</Text>
                 {job.elapsed.padStart(11)} {job.name}
