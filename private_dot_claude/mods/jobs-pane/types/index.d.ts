@@ -13,6 +13,6 @@ export type Snapshot = { at: number; hosts: HostJobs[] }
 
 declare module 'claude-code' {
   interface PluginState {
-    'jobs-pane': { snapshot: Shaped<Snapshot | null> }
+    'jobs-pane': { snapshot: Shaped<Snapshot | null>; offsets: Shaped<Record<string, number>> }
   }
 }

@@ -8,8 +8,8 @@ const POLL_MS = 120_000
 const snapshot = atom({ plugin: 'jobs-pane', key: 'snapshot' } as const, null, { shape: 'snapshot-1' })
 // How far each host's list is scrolled, in rows from the top.
 const offsets = atom({ plugin: 'jobs-pane', key: 'offsets' } as const, {} as Record<string, number>, { shape: 'offsets-1' })
-// Rows each host shows at once; the rest scroll, as in agents-pane.
-const SHOWN = 6
+// Each host gets an equal share of the pane's height (drag its edge for more); the rest pages.
+const MIN_SHOWN = 3
 
 type Target = { host: string; kind: 'slurm' | 'proc'; dir: string; off?: boolean }
 
@@ -103,7 +103,7 @@ export const register: Register = on => {
     }
     if ((await targetsFor($)).length === 0)
       return { text: `No cluster folders mapped for this project. Add it to ${$.plugin.root}/projects.json.` }
-    await $.ui.open({ id: PANE, title: 'Cluster jobs', rows: SHOWN + 3 })
+    await $.ui.open({ id: PANE, title: 'Cluster jobs' })
     void refresh($)
     ticker?.cancel()
     ticker = await $.clock.every(POLL_MS, () => refresh($))
@@ -117,6 +117,9 @@ export const register: Register = on => {
     if (!snap) return <Text dimColor>Checking clusters…</Text>
     const scrolled = await read($, offsets)
     const ago = Math.round((Date.now() - snap.at) / 1000)
+    // Body rows minus the header line, then one title line per host.
+    const body = e.props.scroll?.bodyRows ?? 20
+    const SHOWN = Math.max(MIN_SHOWN, Math.floor((body - 1 - snap.hosts.length) / Math.max(1, snap.hosts.length)))
     const section = (host: HostJobs, k: number) => {
       const all = group(host.jobs)
       const last = Math.max(0, all.length - SHOWN)

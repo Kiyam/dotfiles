@@ -40,9 +40,23 @@ test('a host with more rows than fit pages through them', async ($, on) => {
           ({ id: String(i), name: `job${i}`, state: 'PENDING', elapsed: '0:00', note: 'Priority' })) }],
       } } } }))
 
-  const ui = await $.ui.mount(PANE)
+  // 8 body rows: header + host title leave 6 job rows.
+  const ui = await $.ui.mount({ ...PANE, props: { ...PANE.props, scroll: { offset: 0, bodyRows: 8 } } })
   expect(await ui.find({ type: 'Text', text: /1–6 of 8/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /job5/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /job7/ })).toBeUndefined()
+  await ui.unmount()
+})
+
+test('a taller pane shows more jobs per page', async ($, on) => {
+  on('state.get', () => ({ value: { version: 1, value: { shape: 'snapshot-1', value: {
+        at: 0,
+        hosts: [{ host: 'cluster', jobs: Array.from({ length: 8 }, (_, i) =>
+          ({ id: String(i), name: `job${i}`, state: 'PENDING', elapsed: '0:00', note: 'Priority' })) }],
+      } } } }))
+
+  const ui = await $.ui.mount({ ...PANE, props: { ...PANE.props, scroll: { offset: 0, bodyRows: 40 } } })
+  expect(await ui.find({ type: 'Text', text: /job7/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /of 8/ })).toBeUndefined()
   await ui.unmount()
 })
