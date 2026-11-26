@@ -32,3 +32,17 @@ test('the pane draws hosts, grouped array tasks and errors', async ($, on) => {
   expect((await ui.find({ type: 'Text', text: /Connection refused/ }))?.text).toBe('Connection refused')
   await ui.unmount()
 })
+
+test('a host with more rows than fit pages through them', async ($, on) => {
+  on('state.get', () => ({ value: { version: 1, value: { shape: 'snapshot-1', value: {
+        at: 0,
+        hosts: [{ host: 'cluster', jobs: Array.from({ length: 8 }, (_, i) =>
+          ({ id: String(i), name: `job${i}`, state: 'PENDING', elapsed: '0:00', note: 'Priority' })) }],
+      } } } }))
+
+  const ui = await $.ui.mount(PANE)
+  expect(await ui.find({ type: 'Text', text: /1–6 of 8/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /job5/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /job7/ })).toBeUndefined()
+  await ui.unmount()
+})

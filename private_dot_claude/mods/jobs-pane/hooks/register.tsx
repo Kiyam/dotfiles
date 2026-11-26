@@ -6,6 +6,10 @@ import type { HostJobs, Job, Snapshot } from '../types'
 const PANE = 'jobs-pane'
 const POLL_MS = 120_000
 const snapshot = atom({ plugin: 'jobs-pane', key: 'snapshot' } as const, null, { shape: 'snapshot-1' })
+// How far each host's list is scrolled, in rows from the top.
+const offsets = atom({ plugin: 'jobs-pane', key: 'offsets' } as const, {} as Record<string, number>, { shape: 'offsets-1' })
+// Rows each host shows at once; the rest scroll, as in agents-pane.
+const SHOWN = 6
 
 type Target = { host: string; kind: 'slurm' | 'proc'; dir: string; off?: boolean }
 
@@ -99,7 +103,7 @@ export const register: Register = on => {
     }
     if ((await targetsFor($)).length === 0)
       return { text: `No cluster folders mapped for this project. Add it to ${$.plugin.root}/projects.json.` }
-    await $.ui.open({ id: PANE, title: 'Cluster jobs' })
+    await $.ui.open({ id: PANE, title: 'Cluster jobs', rows: SHOWN + 3 })
     void refresh($)
     ticker?.cancel()
     ticker = await $.clock.every(POLL_MS, () => refresh($))
@@ -111,29 +115,49 @@ export const register: Register = on => {
     const { Box, Text, Button } = $.ui.resolve(e)
     const snap: Snapshot | null = await read($, snapshot)
     if (!snap) return <Text dimColor>Checking clusters…</Text>
+    const scrolled = await read($, offsets)
     const ago = Math.round((Date.now() - snap.at) / 1000)
+    const section = (host: HostJobs, k: number) => {
+      const all = group(host.jobs)
+      const last = Math.max(0, all.length - SHOWN)
+      const from = Math.min(scrolled[host.host] ?? 0, last)
+      const move = (by: number) =>
+        update($, offsets, o => ({ ...o, [host.host]: Math.max(0, Math.min(last, (o[host.host] ?? 0) + by)) }))
+      const paged = all.length > SHOWN
+
+      return (
+        <Box flexDirection="column">
+          <Box flexDirection="row" gap={1}>
+            <Text bold>{host.host}</Text>
+            {paged && <Text dimColor>{from + 1}–{Math.min(from + SHOWN, all.length)} of {all.length}</Text>}
+            {paged && (
+              <Button key={`${host.host}-up`} label="▲" hotkey={String(2 * k + 1)} plain dimColor={from === 0} onPress={() => move(-SHOWN)} />
+            )}
+            {paged && (
+              <Button key={`${host.host}-down`} label="▼" hotkey={String(2 * k + 2)} plain dimColor={from === last} onPress={() => move(SHOWN)} />
+            )}
+          </Box>
+          {host.error && <Text color="red" wrap="truncate-end">{host.error}</Text>}
+          {!host.error && all.length === 0 && <Text dimColor>no jobs</Text>}
+          {all.slice(from, from + SHOWN).map(({ job, count }) => (
+            <Text wrap="truncate-end">
+              <Text color={COLOR[job.state] ?? 'red'}>{job.state.slice(0, 7).padEnd(8)}</Text>
+              {job.elapsed.padStart(11)} {job.name}
+              {count > 1 ? ` ×${count}` : ''}
+              <Text dimColor> {job.state === 'PENDING' ? `(${job.note})` : job.id.split('_')[0]}</Text>
+            </Text>
+          ))}
+        </Box>
+      )
+    }
 
     return (
-      <Box flexDirection="column" gap={1}>
+      <Box flexDirection="column">
         <Box flexDirection="row" gap={1}>
           <Text dimColor>updated {ago < 60 ? `${ago}s` : `${Math.floor(ago / 60)}m`} ago</Text>
           <Button key="refresh" label="refresh" hotkey="r" plain onPress={() => refresh($)} />
         </Box>
-        {snap.hosts.map(host => (
-          <Box flexDirection="column">
-            <Text bold>{host.host}</Text>
-            {host.error && <Text color="red" wrap="truncate-end">{host.error}</Text>}
-            {!host.error && host.jobs.length === 0 && <Text dimColor>no jobs</Text>}
-            {group(host.jobs).map(({ job, count }) => (
-              <Text wrap="truncate-end">
-                <Text color={COLOR[job.state] ?? 'red'}>{job.state.slice(0, 7).padEnd(8)}</Text>
-                {job.elapsed.padStart(11)} {job.name}
-                {count > 1 ? ` ×${count}` : ''}
-                <Text dimColor> {job.state === 'PENDING' ? `(${job.note})` : job.id.split('_')[0]}</Text>
-              </Text>
-            ))}
-          </Box>
-        ))}
+        {snap.hosts.map(section)}
       </Box>
     )
   })
