@@ -1,0 +1,1 @@
+{ "name": "jobs-pane", "version": "0.1.0", "description": "Pane of cluster jobs belonging to the current project (/jobs-pane toggles it)", "types": "./types/index.d.ts" }

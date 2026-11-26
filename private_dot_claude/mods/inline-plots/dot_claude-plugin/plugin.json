@@ -1,0 +1,1 @@
+{ "name": "inline-plots", "version": "0.1.0", "description": "Shows PNGs a Bash call wrote under the project inline, beneath that call", "types": "./types/index.d.ts" }

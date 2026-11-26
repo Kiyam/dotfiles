@@ -1,0 +1,1 @@
+{ "name": "project-rules", "version": "0.1.0", "description": "Per-project guard from projects.json: no unasked commits, no local compute, status-note reminders after job submissions" }
