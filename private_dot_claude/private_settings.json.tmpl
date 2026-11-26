@@ -103,4 +103,7 @@
       "**Separate personal memory sync**: routine under ~/.claude/shared-memory (private repo kiyam/claude-memory on ssh://forgejo.olympus.kiyam.co:222) is user-configured cross-machine memory sync, not part of this project's trust scope"
     ]
   }{{- end }}
+  {{- if eq .chezmoi.hostname "kiyam-mba" }},
+  "autoMode": {{ include ".secrets/kiyam-mba-automode.json.age" | decrypt | trim }}
+  {{- end }}
 }
